@@ -6,6 +6,8 @@
 #include "src/flash_effect.cpp"
 #include "src/scrolling_text.cpp"
 
+#include <pigpio.h>
+
 int SCREEN_WIDTH = 480;
 int SCREEN_HEIGHT = 240;
 float camera_zoom = 1;
@@ -90,6 +92,15 @@ int main()
     bar1.setFillColor(color_palette["black"]);
     bar2.setFillColor(color_palette["black"]);
 
+	/////////////////////////////////////////WiringPi setup
+	if(gpioInitialise() < 0){
+		std::cerr << "gpio failed" << "\n";
+		return 1;
+	}
+	int pin = 17;
+	gpioSetMode(pin, PI_INPUT);
+	bool push_lock = 0;
+
     ////////////////////////////////////////////// start of main game loop
 
     while (window.isOpen())
@@ -105,27 +116,6 @@ int main()
                 if (event.key.code == sf::Keyboard::Enter){
                     pause = !pause;
                 }
-
-                if(!pause){
-                    if (event.key.code == sf::Keyboard::Z && !game_state){
-
-                        if(time_until_fire < 1){
-                            player._state = "won";
-                            enemy._state = "lost";
-                            game_state = 1;
-                            show_fuego = 0;
-                            flash_vector.push_back(new flash_effect);
-                            scrolling_text_vector.push_back(new scrolling_text(1600, 67, "textures/yee.png", 13));
-                        }else{
-                            //disqualified
-                            show_fuego = 0;
-                            player._state = "lost";
-                            enemy._state = "idle";
-                            game_state = 3; //locked_gamestate_for_game_over;
-                        }
-                        
-                    }
-                }
             }
 
             if(event.type == sf::Event::Resized){
@@ -139,6 +129,32 @@ int main()
         //////////////// game logic start
 
         if(!pause){
+
+		//player_input
+		int button_pressed = gpioRead(pin);
+		std::cout << button_pressed << "\n";
+
+		if (button_pressed && !game_state && !push_lock){
+			push_lock = 1;
+                	if(time_until_fire < 1){
+                        	player._state = "won";
+                           	enemy._state = "lost";
+                            	game_state = 1;
+                            	show_fuego = 0;
+                            	flash_vector.push_back(new flash_effect);
+                            	scrolling_text_vector.push_back(new scrolling_text(1600, 67, "textures/yee.png", 13));
+                        }else{
+                            	//disqualified
+                            	show_fuego = 0;
+                            	player._state = "lost";
+                            	enemy._state = "idle";
+                            	game_state = 3; //locked_gamestate_for_game_over;
+                        }
+
+		}
+
+		if (!button_pressed) push_lock = 0; 
+
             frames_passed++;
 
             if(!game_state)time_until_fire--;
