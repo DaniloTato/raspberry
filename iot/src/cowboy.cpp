@@ -2,7 +2,7 @@
 
 cowboy::cowboy(int x, int y, int direction):
 drawable(x,y,"textures/player.png",61,41){
-    
+    _direction = direction;
 }
 
 void cowboy::animation(){

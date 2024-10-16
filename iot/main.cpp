@@ -53,8 +53,12 @@ int main()
     bool show_fuego = 0;
     int fuego_x_pos = 195;
     int time_until_fire = 300;
+    int game_state = 0;
+    bool pause = 0;
 
+    int difficulty = 5; //the lower the number, the higher the difficulty
     int tolerance = 120;
+    int min_tolerance = 3;
     float frames_passed = 0;
 
     drawable sand(-55,100, "textures/scenario.png", 586, 104);
@@ -62,6 +66,7 @@ int main()
     drawable fuego(fuego_x_pos,80, "textures/fuego.png", 80, 46);
     clouds cld(-300,-130,10,60);
     cowboy player(130,120,1);
+    cowboy enemy(280,120,-1);
     sf::RectangleShape bar1(sf::Vector2f(SCREEN_WIDTH, 30));
     sf::RectangleShape bar2(sf::Vector2f(SCREEN_WIDTH, 30));
 
@@ -72,7 +77,6 @@ int main()
 
     while (window.isOpen())
     {
-        frames_passed++;
         sf::Event event;
 
         while (window.pollEvent(event))
@@ -81,8 +85,17 @@ int main()
                 window.close();
 
             if (event.type == sf::Event::KeyPressed){
-                if (event.key.code == sf::Keyboard::Z){
-                    player._state = "won";
+                if (event.key.code == sf::Keyboard::Enter){
+                    pause = !pause;
+                }
+
+                if(!pause){
+                    if (event.key.code == sf::Keyboard::Z && !game_state){
+                        player._state = "won";
+                        enemy._state = "lost";
+                        game_state = 1;
+                        show_fuego = 0;
+                    }
                 }
             }
 
@@ -94,70 +107,92 @@ int main()
             }
         }
 
-        time_until_fire--;
-        if(!time_until_fire) show_fuego = 1;
-        if(time_until_fire < -tolerance) show_fuego = 0, player._state = "lost";
+        if(!pause){
+            frames_passed++;
 
-        if(player._state == "dancing"){
-            go_to_camera_x = 70;
-            go_to_camera_y = 160;
-            go_to_camera_zoom = 2;
+            if(!game_state)time_until_fire--;
+            if(!time_until_fire) show_fuego = 1;
 
-        } else{
+            //happens whenever the player misses the mark
+            if(time_until_fire < -tolerance && game_state != 2){
+                show_fuego = 0;
+                player._state = "lost";
+                enemy._state = "won";
+                game_state = 2; //locked_gamestate_for_game_over;
+            }
 
-            go_to_camera_x = 0;
-            go_to_camera_y = -25;
-            go_to_camera_zoom = 1;
+            if(player._state == "dancing"){
+                go_to_camera_x = 70;
+                go_to_camera_y = 160;
+                go_to_camera_zoom = 2;
 
-            if(player._state == "idle" && (player._last_frame_state != "idle")) time_until_fire = 300;
+            } else{
+                go_to_camera_x = 0;
+                go_to_camera_y = -25;
+                go_to_camera_zoom = 1;
+            }
+
+            //restart the game loop after victory
+            if(player._state == "idle" && game_state == 1){
+                time_until_fire = 200;
+                game_state = 0;
+                enemy._state = "idle";
+                tolerance -= tolerance/difficulty;
+                if(tolerance < min_tolerance) tolerance = min_tolerance;
+            }
+
+            camera_x += (go_to_camera_x - camera_x) * camera_speed;
+            camera_y += (go_to_camera_y - camera_y) * camera_speed;
+            camera_zoom += (go_to_camera_zoom - camera_zoom) * 0.1;
+
+            // update fps every second
+
+            float currentTime = clock.getElapsedTime().asSeconds();
+            frameCount++;
+
+            if (currentTime - lastTime >= 1.0f) {
+                fps = frameCount / (currentTime - lastTime);
+
+                lastTime = currentTime;
+                frameCount = 0;
+            }
+
+            //dramatic bars
+            int bar_height = 30;
+            bar1.setSize(sf::Vector2f(resized_window_width, bar_height));
+            bar2.setSize(sf::Vector2f(resized_window_width, bar_height));
+
+            bar1.setPosition(0,0);
+            bar2.setPosition(0,resized_window_height - bar_height);
+
+            fpsText.setString("FPS: " + std::to_string(static_cast<int>(fps)));
+
+            //drawing all instances
+
+            window.clear(background_color);
+
+            sun.draw(window);
+            cld.draw(window);
+            sand.draw(window);
+
+            player.animation();
+            player.draw(window);
+
+            enemy.animation();
+            enemy.draw(window);
+
+
+            if(show_fuego){
+                fuego._x = fuego_x_pos + sin(frames_passed*0.2)*5;
+                fuego.draw(window);
+            }
+
+            window.draw(bar1);
+            window.draw(bar2);
+
+            window.draw(fpsText);
+            window.display();
         }
-
-        camera_x += (go_to_camera_x - camera_x) * camera_speed;
-        camera_y += (go_to_camera_y - camera_y) * camera_speed;
-        camera_zoom += (go_to_camera_zoom - camera_zoom) * 0.1;
-
-        // Update FPS every second
-
-        float currentTime = clock.getElapsedTime().asSeconds();
-        frameCount++;
-
-        if (currentTime - lastTime >= 1.0f) {
-            fps = frameCount / (currentTime - lastTime);
-
-            lastTime = currentTime;
-            frameCount = 0;
-        }
-
-        //dramatic bars
-        int bar_height = 30;
-        bar1.setSize(sf::Vector2f(resized_window_width, bar_height));
-        bar2.setSize(sf::Vector2f(resized_window_width, bar_height));
-
-        bar1.setPosition(0,0);
-        bar2.setPosition(0,resized_window_height - bar_height);
-
-        fpsText.setString("FPS: " + std::to_string(static_cast<int>(fps)));
-
-        window.clear(background_color);
-
-        sun.draw(window);
-        cld.draw(window);
-        sand.draw(window);
-
-        player.animation();
-        player.draw(window);
-
-
-        if(show_fuego){
-            fuego._x = fuego_x_pos + sin(frames_passed*0.2)*5;
-            fuego.draw(window);
-        }
-
-        window.draw(bar1);
-        window.draw(bar2);
-
-        window.draw(fpsText);
-        window.display();
 
     }
 
