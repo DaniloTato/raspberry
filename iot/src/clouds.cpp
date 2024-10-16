@@ -13,7 +13,7 @@ void clouds::draw(sf::RenderWindow& window){
 
     for (auto i: _cloud_parts){
         i -> _x = _x;
-        i -> _y = _y + std::sinf((float)_frames_alive/60) * (30/ i -> _paralax);
+        i -> _y = _y + sinf((float)_frames_alive/60) * (30/ i -> _paralax);
         i -> draw(window);
     }
 }
