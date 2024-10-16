@@ -40,3 +40,7 @@ void drawable::set_spritesheet_coords(){
     _spritesheet_coords.width = _SPRITESHEET_GRID_WIDTH * _direction;
     _spritesheet_coords.top = _frame_y * _SPRITESHEET_GRID_HEIGHT;
 }
+
+int drawable::get_x(){
+    return _x;
+}

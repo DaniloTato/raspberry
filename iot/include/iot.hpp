@@ -6,12 +6,15 @@
 #include <iostream>
 #include <unordered_map>
 #include <cmath>
+#include <vector>
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 extern float camera_zoom;
 extern int camera_x;
 extern int camera_y;
+extern int resized_window_width;
+extern int resized_window_height;
 
 class drawable{
 public:
@@ -20,6 +23,7 @@ public:
     void update_position();
     void set_spritesheet_coords();
     void update_texture(std::string texture);
+    int get_x();
 
     float _opacity = 255;
     int _x;
@@ -59,6 +63,23 @@ public:
     std::string _last_frame_state = "idle";
 protected:
     int _last_frame_x;
+};
+
+class flash_effect{
+public:
+    void draw(sf::RenderWindow &window);
+    int get_frames();
+protected:
+    int _frames = 0;
+};
+
+class scrolling_text: public drawable{
+public:
+    scrolling_text(int x, int y, std::string texture, int speed);
+    void draw(sf::RenderWindow &window) override;
+protected:
+    int _speed;
+
 };
 
 
