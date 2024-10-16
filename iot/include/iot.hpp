@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
+#include <unordered_map>
+#include <cmath>
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;

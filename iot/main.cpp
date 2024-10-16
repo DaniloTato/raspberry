@@ -16,13 +16,14 @@ int go_to_camera_y = camera_y;
 float go_to_camera_zoom = camera_zoom;
 float camera_speed = 0.1;
 
-std::unordered_map<std::string, sf::Color> color_palette{
-    {"purple", sf::Color(104,56,108)},
-    {"black", sf::Color(24,20,37)},
-};
-
 int main()
 {
+
+    std::unordered_map<std::string, sf::Color> color_palette{
+        {"purple", sf::Color(104,56,108)},
+        {"black", sf::Color(24,20,37)},
+    };
+
     ///////sfml window stuff////////////
 
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Typing RPG");
