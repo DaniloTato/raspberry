@@ -1,5 +1,8 @@
 #include "../include/iot.hpp"
 
+#ifndef FUNCTIONS
+#define FUNCTIONS
+
 template <typename S>
 bool str_to_comparison(S arg1, std::string comparison, S arg2){
     if (comparison == "=="){
@@ -18,6 +21,32 @@ bool str_to_comparison(S arg1, std::string comparison, S arg2){
 
     std::cout << "Invalid middle argument (comparison) in function str_to_comparison" << std::endl;
     exit(-1);
+}
+
+template <typename S>
+bool find_in_vector(std::vector<S> vec, S target){
+    for(auto i:vec){
+        if(i == target) return 1;
+    }
+    return 0;
+}
+
+std::vector<int> random_indexes(int result_len, int max_index){
+    std::vector<int> res;
+    srand(time(0));
+    for (int i = 0; i < result_len; i++){
+        int random_num = rand() % (max_index + 1);
+
+        if(find_in_vector(res, random_num)){
+            random_num = 0;
+            while(find_in_vector(res, random_num)){
+                random_num++;
+            }
+        }
+
+        res.push_back(random_num);
+    }
+    return res;
 }
 
 template <typename T>
@@ -59,3 +88,5 @@ std::string comparison = "pass", int var = 0) {
 
     }
 }
+
+#endif

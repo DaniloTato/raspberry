@@ -1,7 +1,7 @@
 #include "../include/iot.hpp"
 
-drawable::drawable(int x, int y, std::string texture, int spritesheet_width, int spritesheet_height, float paralax):
-_x(x), _y(y), _SPRITESHEET_GRID_WIDTH(spritesheet_width), _SPRITESHEET_GRID_HEIGHT(spritesheet_height), _paralax(paralax){
+drawable::drawable(int x, int y, std::string texture, int spritesheet_width, int spritesheet_height, float paralax, int first_frame_x):
+_x(x), _y(y), _frame_x(first_frame_x), _SPRITESHEET_GRID_WIDTH(spritesheet_width), _SPRITESHEET_GRID_HEIGHT(spritesheet_height), _paralax(paralax){
     _spritesheet_coords.height = _SPRITESHEET_GRID_HEIGHT;
     update_texture(texture);
 }

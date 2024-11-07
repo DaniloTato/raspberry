@@ -1,1 +1,0 @@
-g++ main.o -o sfml-app -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -lpigpio -lrt -lpthread

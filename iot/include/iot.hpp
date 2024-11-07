@@ -16,9 +16,23 @@ extern int camera_y;
 extern int resized_window_width;
 extern int resized_window_height;
 
+extern float go_to_camera_zoom;
+
+extern int go_to_camera_x;
+extern int go_to_camera_y;
+extern float camera_speed;
+
+extern bool pause;
+
+class fps_counter;
+
+extern fps_counter fpsc;
+extern std::unordered_map<std::string, sf::Color> color_palette;
+extern sf::Font font;
+
 class drawable{
 public:
-    drawable(int x, int y, std::string texture, int spritesheet_width, int spritesheet_height, float paralax = 1);
+    drawable(int x, int y, std::string texture, int spritesheet_width, int spritesheet_height, float paralax = 1, int first_frame_x = 0);
     virtual void draw(sf::RenderWindow &window);
     void update_position();
     void set_spritesheet_coords();
@@ -38,7 +52,7 @@ protected:
     int _r = 255; 
     int _g = 255;
     int _b = 255;
-    int _frame_x = 0;
+    int _frame_x;
     int _frame_y = 0;
     unsigned int _frame_count = 0;
     int _SPRITESHEET_GRID_WIDTH;
@@ -80,6 +94,19 @@ public:
 protected:
     int _speed;
 
+};
+
+class fps_counter{
+public:
+    fps_counter(int x, int y, sf::Font& font, sf::Clock* clock);
+    void calculate_fps();
+    void draw(sf::RenderWindow& window);
+protected:
+    sf::Clock* _clock;
+    sf::Text _fpsText;
+    float _last_time = 0;
+    int _frame_count = 0;
+    float _fps = 0;
 };
 
 
