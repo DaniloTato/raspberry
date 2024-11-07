@@ -1,1 +1,1 @@
-mosquitto_pub -h test.mosquitto.org -t 'danilo' -m 'yellow_off'
+mosquitto_pub -h broker.hivemq.com -t 'danilo' -m 'yellow_off'
