@@ -38,12 +38,15 @@ public:
     void set_spritesheet_coords();
     void update_texture(std::string texture);
     int get_x();
+    void animation_update();
+    void animate(int number_of_frames, int frame_y);
 
     float _opacity = 255;
     int _x;
     int _y;
     float _paralax = 1;
     sf::Sprite _my_sprite;
+    int animation_request = 0;
     
 protected:
     int _direction = 1;
@@ -107,6 +110,20 @@ protected:
     float _last_time = 0;
     int _frame_count = 0;
     float _fps = 0;
+};
+
+
+///LOTTERY
+
+class animated_pointer: public drawable{
+public:
+    animated_pointer(int x, int y, std::string texture, int spritesheet_width, int spritesheet_height, int animation_frames, float paralax = 1, int first_frame_x = 0);
+    void draw(sf::RenderWindow& window) override;
+    int _go_to_x;
+    int _go_to_y;
+protected:
+    const int _ANIMATION_FRAMES;
+    float go_to_speed = 0.2;
 };
 
 

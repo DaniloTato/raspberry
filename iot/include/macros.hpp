@@ -46,4 +46,9 @@
     go_to_camera_zoom = camera_zoom;\
     pause = 0;\
 
+    #define CAMERA_POSITION_UPDATE()\
+    camera_x += (go_to_camera_x - camera_x) * camera_speed;\
+    camera_y += (go_to_camera_y - camera_y) * camera_speed;\
+    camera_zoom += (go_to_camera_zoom - camera_zoom) * 0.1;\
+
 #endif

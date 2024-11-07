@@ -7,6 +7,7 @@
 #include "src/flash_effect.cpp"
 #include "src/scrolling_text.cpp"
 #include "src/fps_counter.cpp"
+#include "src/lottery_src/animated_pointer.cpp"
 #include "src/games/cowboy_game.cpp"
 #include "src/games/lottery_game.cpp"
 
@@ -61,7 +62,7 @@ int main(){
     RESTART_GLOBAL_VARS();
     functions[1](window);
     RESTART_GLOBAL_VARS();
-    functions[1](window);
+    functions[0](window);
 
     return 0;
 }

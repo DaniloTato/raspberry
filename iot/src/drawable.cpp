@@ -44,3 +44,19 @@ void drawable::set_spritesheet_coords(){
 int drawable::get_x(){
     return _x;
 }
+
+void drawable::animation_update(){
+    _frame_count++;
+    if(animation_request){
+        _frame_x = (_frame_count/7);
+        if(_frame_x >= animation_request) animation_request = 0, _frame_x = 0, _frame_count = 0;
+    }
+
+}
+
+void drawable::animate(int number_of_frames, int frame_y){
+    animation_request = number_of_frames;
+    _frame_y = frame_y;
+    _frame_x = 0;
+    _frame_count = 0;
+}

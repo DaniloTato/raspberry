@@ -35,15 +35,15 @@ std::vector<int> random_indexes(int result_len, int max_index){
     std::vector<int> res;
     srand(time(0));
     for (int i = 0; i < result_len; i++){
-        int random_num = rand() % (max_index + 1);
+        int random_num = rand() % (max_index);
 
         if(find_in_vector(res, random_num)){
             random_num = 0;
             while(find_in_vector(res, random_num)){
                 random_num++;
+                std::cout << random_num << "\n";
             }
         }
-
         res.push_back(random_num);
     }
     return res;
