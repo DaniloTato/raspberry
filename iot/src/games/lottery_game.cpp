@@ -1,5 +1,6 @@
 #include "../../include/iot.hpp"
 #include "../functions.cpp"
+#include "../../include/macros.hpp"
 
 bool lottery_game(sf::RenderWindow& window){
 
