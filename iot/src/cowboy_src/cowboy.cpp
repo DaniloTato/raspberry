@@ -1,4 +1,4 @@
-#include "../include/iot.hpp"
+#include "../../include/iot.hpp"
 
 cowboy::cowboy(int x, int y, int direction):
 drawable(x,y,"textures/player.png",61,41){
@@ -6,7 +6,6 @@ drawable(x,y,"textures/player.png",61,41){
 }
 
 void cowboy::animation(){
-    _frame_count++;
     if(_last_frame_state != _state) _frame_count = 0, _last_frame_x = 0;
 
     if(_state == "idle"){

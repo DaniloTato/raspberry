@@ -2,14 +2,18 @@
 #include "include/macros.hpp"
 #include "src/functions.cpp"
 #include "src/drawable.cpp"
-#include "src/clouds.cpp"
-#include "src/cowboy.cpp"
-#include "src/flash_effect.cpp"
+#include "src/cowboy_src/clouds.cpp"
+#include "src/cowboy_src/cowboy.cpp"
+#include "src/cowboy_src/flash_effect.cpp"
 #include "src/scrolling_text.cpp"
 #include "src/fps_counter.cpp"
+#include "src/ui.cpp"
 #include "src/lottery_src/animated_pointer.cpp"
 #include "src/games/cowboy_game.cpp"
 #include "src/games/lottery_game.cpp"
+#include "src/lottery_src/card.cpp"
+#include "src/drawable_with_physics.cpp"
+#include "src/lottery_src/coin.cpp"
 
 int SCREEN_WIDTH = 480;
 int SCREEN_HEIGHT = 240;
@@ -36,13 +40,18 @@ fps_counter fpsc(10,10,font, &sfclock);
 std::unordered_map<std::string, sf::Color> color_palette{
     {"purple", sf::Color(104,56,108)},
     {"black", sf::Color(24,20,37)},
+    {"blue", sf::Color(44,232,245)},
 };
 
-typedef bool (*function_ptr)(sf::RenderWindow&);
+typedef bool (*function_ptr)(sf::RenderWindow&, mysqlx::Schema&);
 
 int main(){
+    //mysql connection
+    mysqlx::Session session("localhost", 33060, "root", "");
+    mysqlx::Schema db = session.getSchema("neurobox");
+
     //load arial font
-    if (!font.loadFromFile("arial.ttf")) {
+    if (!font.loadFromFile("8-BIT WONDER.TTF")) {
         std::cerr << "Could not load font\n";
         return 0;
     }
@@ -58,11 +67,11 @@ int main(){
 
     int game_selection = 0;
 
-    functions[1](window);
+    functions[0](window, db);
     RESTART_GLOBAL_VARS();
-    functions[1](window);
+    functions[1](window, db);
     RESTART_GLOBAL_VARS();
-    functions[0](window);
+    functions[0](window, db);
 
     return 0;
 }

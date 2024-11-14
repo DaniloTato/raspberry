@@ -1,7 +1,8 @@
 #include "../../include/iot.hpp"
 #include "../functions.cpp"
+#include "../../include/macros.hpp"
 
-bool cowboy_game(sf::RenderWindow& window){
+bool cowboy_game(sf::RenderWindow& window, mysqlx::Schema& db){
 
     camera_x = 0;
     camera_y = -25;
@@ -14,22 +15,28 @@ bool cowboy_game(sf::RenderWindow& window){
 
     sf::Text game_over;
     game_over.setFont(font);
-    game_over.setCharacterSize(25);
+    game_over.setCharacterSize(10);
     game_over.setFillColor(sf::Color::White);
     game_over.setString("Fin del Juego...");
     
     sf::Text disqualified;
     disqualified.setFont(font);
-    disqualified.setCharacterSize(25);
+    disqualified.setCharacterSize(10);
     disqualified.setFillColor(sf::Color::White);
     disqualified.setString("Descalificado...");
+
+    std::vector<double> reaction_times;
     
+    //must be deleted when ending the game loop
     std::vector<flash_effect*> flash_vector;
     std::vector<scrolling_text*> scrolling_text_vector;
+    //
+
     bool show_fuego = 0;
     int time_until_fire = 300;
     int game_state = 0;
     int difficulty = 5; /*the lower the number, the higher the difficulty. Must be highr than 1 */
+    const int MAX_DIFFICULTY = 10;
     int tolerance = 60;
     int min_tolerance = 3;
     float frames_passed = 0;
@@ -61,10 +68,13 @@ bool cowboy_game(sf::RenderWindow& window){
                 }
 
                 if (event.key.code == sf::Keyboard::Escape){
+                    delete_ptr_vector(flash_vector);
+                    delete_ptr_vector(scrolling_text_vector);
                     return 1;
                 }
 
                 if(!pause){
+
                     if (event.key.code == sf::Keyboard::Z && !game_state){
 
                         if(time_until_fire < 1){
@@ -74,12 +84,26 @@ bool cowboy_game(sf::RenderWindow& window){
                             show_fuego = 0;
                             flash_vector.push_back(new flash_effect);
                             scrolling_text_vector.push_back(new scrolling_text(1600, 67, "textures/yee.png", 13));
+                            double reaction = -time_until_fire/56.0f;
+                            reaction_times.push_back(reaction);
+                            mysqlx::Table testingTable = db.getTable("testing");
+                            testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
+                            .values(get_date(), reaction, "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción")
+                            .execute();
+
                         }else{
                             //disqualified
                             show_fuego = 0;
                             player._state = "lost";
                             enemy._state = "idle";
                             game_state = 3; //locked_gamestate_for_game_over;
+
+                            if(reaction_times.size()){
+                                mysqlx::Table testingTable = db.getTable("testing");
+                                testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
+                                .values(get_date(), avg(reaction_times), "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción_promedio_de_la_partida")
+                                .execute();
+                            }
                         }
                         
                     }
@@ -109,6 +133,13 @@ bool cowboy_game(sf::RenderWindow& window){
                 player._state = "lost";
                 enemy._state = "won";
                 game_state = 2; //locked_gamestate_for_game_over;
+
+                if(reaction_times.size()){
+                    mysqlx::Table testingTable = db.getTable("testing");
+                    testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
+                    .values(get_date(), avg(reaction_times), "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción_promedio_de_la_partida")
+                    .execute();
+                }
             }
 
             if(player._state == "dancing"){
@@ -148,7 +179,7 @@ bool cowboy_game(sf::RenderWindow& window){
             //flash_effect destruction
             flash_conditional_delete(flash_vector, &flash_effect::get_frames, ">", 20);
             //scrolling_text destruction
-            drawable_conditional_delete(scrolling_text_vector, &drawable::get_x, "<", -1200);
+            conditional_delete(scrolling_text_vector, &drawable::get_x, "<", -1200);
 
             //drawing all instances
 

@@ -8,6 +8,13 @@
 #include <cmath>
 #include <vector>
 
+#include <iomanip>
+#include <chrono>
+#include <ctime>
+#include <sstream>
+
+#include <mysqlx/xdevapi.h>
+
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 extern float camera_zoom;
@@ -34,19 +41,26 @@ class drawable{
 public:
     drawable(int x, int y, std::string texture, int spritesheet_width, int spritesheet_height, float paralax = 1, int first_frame_x = 0);
     virtual void draw(sf::RenderWindow &window);
-    void update_position();
+    virtual void update_position();
     void set_spritesheet_coords();
     void update_texture(std::string texture);
+    void update_texture(sf::Image img);
     int get_x();
     void animation_update();
-    void animate(int number_of_frames, int frame_y);
+    void animate(int number_of_frames, int frame_y, float animation_speed = 7, bool invert = 0);
+    void loop_animate(int number_of_frames, int frame_y, float animation_speed = 7);
+    void end_loop_animate();
+    int get_frame_x();
 
     float _opacity = 255;
-    int _x;
-    int _y;
+    double _x;
+    double _y;
     float _paralax = 1;
     sf::Sprite _my_sprite;
-    int animation_request = 0;
+    int _animation_request = 0;
+    float _size = 1;
+    float _animation_speed = 7;
+    bool _invert_animation = 0;
     
 protected:
     int _direction = 1;
@@ -60,6 +74,12 @@ protected:
     unsigned int _frame_count = 0;
     int _SPRITESHEET_GRID_WIDTH;
     int _SPRITESHEET_GRID_HEIGHT;
+};
+
+class ui: public drawable{
+public:
+    ui(int x, int y, std::string texture, int spritesheet_width, int spritesheet_height, float paralax = 1, int first_frame_x = 0);
+    virtual void update_position();
 };
 
 class clouds: public drawable{
@@ -92,7 +112,7 @@ protected:
 
 class scrolling_text: public drawable{
 public:
-    scrolling_text(int x, int y, std::string texture, int speed);
+    scrolling_text(int x, int y, std::string texture, int speed, float size = 1);
     void draw(sf::RenderWindow &window) override;
 protected:
     int _speed;
@@ -119,12 +139,56 @@ class animated_pointer: public drawable{
 public:
     animated_pointer(int x, int y, std::string texture, int spritesheet_width, int spritesheet_height, int animation_frames, float paralax = 1, int first_frame_x = 0);
     void draw(sf::RenderWindow& window) override;
+    void update_position() override;
+    void shake_it(float magnitude);
     int _go_to_x;
     int _go_to_y;
+    float _shake_magnitude = 0;
 protected:
     const int _ANIMATION_FRAMES;
-    float go_to_speed = 0.2;
+    float _GO_TO_SPEED = 0.2;
+    float _shake_factor = 0;
 };
 
+class physics_object{
+public:
+    virtual void pos_plus_spd() = 0;
+    virtual void gravity(float g) = 0;
+    double _spdx = 0;
+    double _spdy = 0;
+};
+
+class drawable_with_physics: public drawable, public physics_object{
+public:
+    drawable_with_physics(int x, int y, std::string texture, int spritesheet_width, int spritesheet_height, float paralax = 1, int first_frame_x = 0);
+    void pos_plus_spd() override;
+    void gravity(float g) override;
+};
+
+class coin: public drawable_with_physics{
+public:
+    coin(int x, int y, int my_floor, int linked_space);
+    void draw(sf::RenderWindow& window) override;
+    int get_linked_space();
+protected:
+    int _my_floor;
+    int _linked_space;
+
+};
+
+class card: public ui, public physics_object{
+public:
+    card(int x, int y, int face, float paralax = 1);
+    void draw(sf::RenderWindow& window) override;
+    void card_exit();
+    void pos_plus_spd() override;
+    void gravity(float g) override{}
+    ~card();
+    int get_symbol_costume();
+private:
+    ui* _symbol;
+    bool _going_out = 0;
+    int _face;
+};
 
 #endif

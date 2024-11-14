@@ -3,7 +3,7 @@
 fps_counter::fps_counter(int x, int y, sf::Font& font, sf::Clock* clock):
 _clock(clock){
     _fpsText.setFont(font);
-    _fpsText.setCharacterSize(20);
+    _fpsText.setCharacterSize(10);
     _fpsText.setFillColor(sf::Color::White);
     _fpsText.setPosition(x, y);
 }
@@ -19,7 +19,7 @@ void fps_counter::calculate_fps(){
         _frame_count = 0;
     }
 
-    _fpsText.setString("FPS: " + std::to_string(static_cast<int>(_fps)));
+    _fpsText.setString("FPS " + std::to_string(static_cast<int>(_fps)));
 }
 
 void fps_counter::draw(sf::RenderWindow& window){
