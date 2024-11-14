@@ -1,118 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
     <head>
         <meta charset="utf-8"/>
-        <title> Neurobox</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Neurobox</title>
         <link rel="stylesheet" href="estilos.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
     </head>
     <body>
-        <div id = "Container">
-
-            <header>
-            <h1>NeuroboxXx</h1>
+        <div id="Container">
+            <header aria-label="Encabezado principal">
+                <h1>Neurobox</h1>
             </header>
 
-            <nav>
+            <nav aria-label="Navegación principal">
                 <ul>
-                    <li>
-                        <a href="#">
-                            Inicio
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#informacion">
-                            Información
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="resultados_neurobox.html">
-                            Base de Datos
-                        </a>
-                    </li>
-
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#informacion">Información</a></li>
+                    <li><a href="resultados_neurobox.html">Base de Datos</a></li>
                 </ul>
-
             </nav>
+
             <div class="clearfix"></div>
-            <section id = "Content">
+
+            <section id="Content">
                 <article class="article2">
-                    <h2>Titulo del articulo</h2>
-                    <p>Texto del articulo</p>
+                    <h2>Título del artículo</h2>
+                    <p>Texto del artículo.</p>
                     <img src="Sin título.png" alt="Modelo de la Neurobox" width="300" height="200">
                 </article>
+
                 <article class="article">
                     <h2>Objetivos</h2>
-                    <p>Nuestro objetivo es crear un dispositivo interactivo para ayudar a niños con problemas de coordinación a mejorar sus habilidades motoras finas y gruesas de una manera divertida y estimulante. Este dispositivo integrará una serie de juegos que promoverán el desarrollo de destrezas como la precisión, el equilibrio y la concentración. Utilizaremos sensores y retroalimentación visual y auditiva para captar el interés de los niños y para proporcionarles una experiencia de aprendizaje que los motive a practicar y superar retos, reforzando así su confianza y mejorando sus habilidades motrices en cada sesión.</p>
+                    <p>Nuestro objetivo es crear un dispositivo interactivo para ayudar a niños con problemas de coordinación a mejorar sus habilidades motoras finas y gruesas de una manera divertida y estimulante. Este dispositivo integrará una serie de juegos que promoverán el desarrollo de destrezas como la precisión, el equilibrio y la concentración, utilizando tecnologías innovadoras como sensores de movimiento, retroalimentación táctil, visual y auditiva.</p>
+                    <p> ‎  </p>
+                    
+                    <div style="text-align: center;">
+                    <img src="CSA076.jpg" alt="Imagen de ejemplo" width="300" height="200">
+                    </div>
                 </article>
+
                 <article class="article" id="informacion">
                     <h2>Información</h2>
-                    <p>Texto de informacion</p>
+                    <p>Texto de información adicional.</p>
                 </article>
-               
             </section>
 
-
-
-
-            <body>
-                <div id="Container">                    
-                    <footer>
-                        <nav>
-                            <ul>
-                                <li><a href="contactos.html">Contactos</a></li>
-                            </ul>
-                        </nav>
-                    </footer>
-                </div>
-
-                <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        const client = new Paho.MQTT.Client("broker.hivemq.com", 8000, "clientId-" + Math.random());
-            
-                        client.onConnectionLost = (responseObject) => {
-                            if (responseObject.errorCode !== 0) {
-                                console.log("Connection Lost:", responseObject.errorMessage);
-                            }
-                        };
-            
-                        client.onMessageArrived = (message) => {
-                            console.log("Message Arrived:", message.payloadString);
-                        };
-            
-                        client.connect({
-                            onSuccess: () => {
-                                console.log("Connected to broker");
-                                client.subscribe("test/topic"); // Replace with your topic
-                            },
-                            onFailure: (error) => {
-                                console.log("Connection Failed:", error.errorMessage);
-                            }
-                        });
-            
-                        window.sendGreenOn = function() {
-                            const message = new Paho.MQTT.Message("green_on");
-                            message.destinationName = "test/topic";
-                            client.send(message);
-                            console.log("Message Sent: green_on");
-                        };
-            
-                        window.sendGreenOff = function() {
-                            const message = new Paho.MQTT.Message("green_off");
-                            message.destinationName = "test/topic";
-                            client.send(message);
-                            console.log("Message Sent: green_off");
-                        };
-                    });
-                </script>
-            </body>
-            
-
-
+            <footer>
+                <nav aria-label="Enlaces secundarios">
+                    <ul>
+                        <li><a href="contactos.html">Contactos</a></li>
+                    </ul>
+                </nav>
+            </footer>
         </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const client = new Paho.MQTT.Client("broker.hivemq.com", 8000, "clientId-" + Math.random());
+        
+                client.onConnectionLost = (responseObject) => {
+                    if (responseObject.errorCode !== 0) {
+                        console.log("Connection Lost:", responseObject.errorMessage);
+                    }
+                };
+        
+                client.onMessageArrived = (message) => {
+                    console.log("Message Arrived:", message.payloadString);
+                };
+        
+                client.connect({
+                    onSuccess: () => {
+                        console.log("Connected to broker");
+                        client.subscribe("test/topic"); // Reemplaza con tu topic
+                    },
+                    onFailure: (error) => {
+                        console.log("Connection Failed:", error.errorMessage);
+                    }
+                });
+        
+                window.sendGreenOn = function() {
+                    const message = new Paho.MQTT.Message("green_on");
+                    message.destinationName = "test/topic";
+                    client.send(message);
+                    console.log("Message Sent: green_on");
+                };
+        
+                window.sendGreenOff = function() {
+                    const message = new Paho.MQTT.Message("green_off");
+                    message.destinationName = "test/topic";
+                    client.send(message);
+                    console.log("Message Sent: green_off");
+                };
+            });
+        </script>
     </body>
-
-
-
 </html>
