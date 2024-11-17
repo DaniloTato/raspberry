@@ -35,7 +35,7 @@ extern int go_to_camera_x;
 extern int go_to_camera_y;
 extern float camera_speed;
 
-extern bool pause;
+extern bool paused;
 
 class fps_counter;
 

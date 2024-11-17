@@ -28,7 +28,7 @@ float go_to_camera_zoom = 1;
 int resized_window_width = SCREEN_WIDTH;
 int resized_window_height = SCREEN_HEIGHT;
 float camera_speed = 0.1;
-bool pause = 0;
+bool paused = 0;
 
 sf::Clock sfclock;
 

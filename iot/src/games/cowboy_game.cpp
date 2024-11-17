@@ -64,7 +64,7 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn){
 
             if (event.type == sf::Event::KeyPressed){
                 if (event.key.code == sf::Keyboard::Enter){
-                    pause = !pause;
+                    paused = !paused;
                 }
 
                 if (event.key.code == sf::Keyboard::Escape){
@@ -73,7 +73,7 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn){
                     return 1;
                 }
 
-                if(!pause){
+                if(!paused){
 
                     if (event.key.code == sf::Keyboard::Z && !game_state){
 
@@ -121,7 +121,7 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn){
 
         //////////////// game logic start
 
-        if(!pause){
+        if(!paused){
             frames_passed++;
 
             if(!game_state)time_until_fire--;

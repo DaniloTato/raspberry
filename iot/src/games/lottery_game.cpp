@@ -130,7 +130,7 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn){
 
             if (event.type == sf::Event::KeyPressed){
                 if (event.key.code == sf::Keyboard::Enter){
-                    pause = !pause;
+                    paused = !paused;
                 }
 
                 if (event.key.code == sf::Keyboard::Escape){
@@ -182,7 +182,7 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn){
         }
 
         //////////////// game logic start
-        if(!pause){
+        if(!paused){
 
             frames++;
             reaction_time++;
