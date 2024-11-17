@@ -2,7 +2,7 @@
 #include "../functions.cpp"
 #include "../../include/macros.hpp"
 
-bool cowboy_game(sf::RenderWindow& window, mysqlx::Schema& db){
+bool cowboy_game(sf::RenderWindow& window){
 
     camera_x = 0;
     camera_y = -25;
@@ -86,10 +86,11 @@ bool cowboy_game(sf::RenderWindow& window, mysqlx::Schema& db){
                             scrolling_text_vector.push_back(new scrolling_text(1600, 67, "textures/yee.png", 13));
                             double reaction = -time_until_fire/56.0f;
                             reaction_times.push_back(reaction);
-                            mysqlx::Table testingTable = db.getTable("testing");
-                            testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
-                            .values(get_date(), reaction, "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción")
-                            .execute();
+
+                            // mysqlx::Table testingTable = db.getTable("testing");
+                            // testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
+                            // .values(get_date(), reaction, "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción")
+                            // .execute();
 
                         }else{
                             //disqualified
@@ -98,12 +99,12 @@ bool cowboy_game(sf::RenderWindow& window, mysqlx::Schema& db){
                             enemy._state = "idle";
                             game_state = 3; //locked_gamestate_for_game_over;
 
-                            if(reaction_times.size()){
-                                mysqlx::Table testingTable = db.getTable("testing");
-                                testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
-                                .values(get_date(), avg(reaction_times), "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción_promedio_de_la_partida")
-                                .execute();
-                            }
+                            // if(reaction_times.size()){
+                            //     mysqlx::Table testingTable = db.getTable("testing");
+                            //     testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
+                            //     .values(get_date(), avg(reaction_times), "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción_promedio_de_la_partida")
+                            //     .execute();
+                            // }
                         }
                         
                     }
@@ -134,12 +135,12 @@ bool cowboy_game(sf::RenderWindow& window, mysqlx::Schema& db){
                 enemy._state = "won";
                 game_state = 2; //locked_gamestate_for_game_over;
 
-                if(reaction_times.size()){
-                    mysqlx::Table testingTable = db.getTable("testing");
-                    testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
-                    .values(get_date(), avg(reaction_times), "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción_promedio_de_la_partida")
-                    .execute();
-                }
+                // if(reaction_times.size()){
+                //     mysqlx::Table testingTable = db.getTable("testing");
+                //     testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
+                //     .values(get_date(), avg(reaction_times), "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción_promedio_de_la_partida")
+                //     .execute();
+                // }
             }
 
             if(player._state == "dancing"){

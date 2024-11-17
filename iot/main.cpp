@@ -43,12 +43,12 @@ std::unordered_map<std::string, sf::Color> color_palette{
     {"blue", sf::Color(44,232,245)},
 };
 
-typedef bool (*function_ptr)(sf::RenderWindow&, mysqlx::Schema&);
+typedef bool (*function_ptr)(sf::RenderWindow&);
 
 int main(){
     //mysql connection
     mysqlx::Session session("localhost", 33060, "root", "");
-    mysqlx::Schema db = session.getSchema("neurobox");
+    //mysqlx::Schema db = session.getSchema("neurobox");
 
     //load arial font
     if (!font.loadFromFile("8-BIT WONDER.TTF")) {
@@ -67,11 +67,11 @@ int main(){
 
     int game_selection = 0;
 
-    functions[0](window, db);
+    functions[0](window);
     RESTART_GLOBAL_VARS();
-    functions[1](window, db);
+    functions[1](window);
     RESTART_GLOBAL_VARS();
-    functions[0](window, db);
+    functions[0](window);
 
     return 0;
 }

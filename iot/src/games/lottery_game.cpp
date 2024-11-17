@@ -24,7 +24,7 @@ int update_selection(int row, int column){
 
 void check_icon(std::vector<int>& pinned, std::vector<int>& selected_icons, int& selection, std::vector<card*>& cards, std::vector<drawable*> icons, 
     std::vector<coin*>& coins, std::vector<scrolling_text*>& scrolling_texts, unsigned int &reaction_time, const int SCORE_TIME_TOLERANCE, 
-    unsigned long& score, animated_pointer& clicky, mysqlx::Schema& db){
+    unsigned long& score, animated_pointer& clicky){
 
     if(!find_in_vector(pinned, selection) && cards.size()){
         if(icons[selection] -> get_frame_x() == cards.front() -> get_symbol_costume()){
@@ -36,10 +36,10 @@ void check_icon(std::vector<int>& pinned, std::vector<int>& selected_icons, int&
             int score_to_add = 100 - (reaction_time/SCORE_TIME_TOLERANCE);
             if(score_to_add > 0) score += score_to_add;
 
-            mysqlx::Table testingTable = db.getTable("testing");
-            testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
-            .values(get_date(), reaction_time/56.0f, "lotería",  0, "timpo_de_elección")
-            .execute();
+            // mysqlx::Table testingTable = db.getTable("testing");
+            // testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
+            // .values(get_date(), reaction_time/56.0f, "lotería",  0, "timpo_de_elección")
+            // .execute();
 
             reaction_time = 0;
         } else clicky.shake_it(5);
@@ -48,7 +48,7 @@ void check_icon(std::vector<int>& pinned, std::vector<int>& selected_icons, int&
     }
 }
 
-bool lottery_game(sf::RenderWindow& window, mysqlx::Schema& db){
+bool lottery_game(sf::RenderWindow& window){
 
     unsigned long frames;
 
@@ -138,17 +138,17 @@ bool lottery_game(sf::RenderWindow& window, mysqlx::Schema& db){
                 }
 
                 if (event.key.code == sf::Keyboard::A){
-                    if(clicky_column == 0) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, db);
+                    if(clicky_column == 0) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky);
                     else gear2.animate(7, 0, 3, 1);
                     clicky_column = 0;
                     selection = update_selection(clicky_row, clicky_column);
                 } else if (event.key.code == sf::Keyboard::S){
-                    if(clicky_column == 1) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, db);
+                    if(clicky_column == 1) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky);
                     else gear2.animate(7, 0, 3, (clicky_column > 1));
                     clicky_column = 1;
                     selection = update_selection(clicky_row, clicky_column);
                 } else if (event.key.code == sf::Keyboard::D){
-                    if(clicky_column == 2) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, db);
+                    if(clicky_column == 2) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky);
                     else gear2.animate(7, 0, 3, 0);
                     clicky_column = 2;
                     selection = update_selection(clicky_row, clicky_column);
