@@ -2,7 +2,7 @@
 #include "../functions.cpp"
 #include "../../include/macros.hpp"
 
-bool cowboy_game(sf::RenderWindow& window){
+bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn){
 
     camera_x = 0;
     camera_y = -25;

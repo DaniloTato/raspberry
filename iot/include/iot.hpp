@@ -13,7 +13,13 @@
 #include <ctime>
 #include <sstream>
 
-#include <mysqlx/xdevapi.h>
+#include <mysql_driver.h>
+#include <mysql_connection.h>
+#include <cppconn/statement.h>
+#include <cppconn/resultset.h>
+#include <cppconn/exception.h>
+#include <cppconn/prepared_statement.h>
+#include <cppconn/datatype.h>
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;

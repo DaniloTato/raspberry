@@ -24,7 +24,7 @@ int update_selection(int row, int column){
 
 void check_icon(std::vector<int>& pinned, std::vector<int>& selected_icons, int& selection, std::vector<card*>& cards, std::vector<drawable*> icons, 
     std::vector<coin*>& coins, std::vector<scrolling_text*>& scrolling_texts, unsigned int &reaction_time, const int SCORE_TIME_TOLERANCE, 
-    unsigned long& score, animated_pointer& clicky){
+    unsigned long& score, animated_pointer& clicky, sql::Connection* conn){
 
     if(!find_in_vector(pinned, selection) && cards.size()){
         if(icons[selection] -> get_frame_x() == cards.front() -> get_symbol_costume()){
@@ -36,10 +36,23 @@ void check_icon(std::vector<int>& pinned, std::vector<int>& selected_icons, int&
             int score_to_add = 100 - (reaction_time/SCORE_TIME_TOLERANCE);
             if(score_to_add > 0) score += score_to_add;
 
-            // mysqlx::Table testingTable = db.getTable("testing");
-            // testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
-            // .values(get_date(), reaction_time/56.0f, "lotería",  0, "timpo_de_elección")
-            // .execute();
+            //mySQL action
+
+                if (conn) {
+                    std::string query = "INSERT INTO testing (fecha, puntaje, juego, nivel, tipo) VALUES (?, ?, ?, ?, ?)";
+                    std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
+                    //.values(get_date(), reaction, "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción")
+                    pstmt->setString(1, get_date());
+                    pstmt->setDouble(2, reaction_time/57.0f);
+                    pstmt->setString(3, "lotería");
+                    pstmt->setInt(4, 0);
+                    pstmt->setString(5, "tiempo_de_reacción");
+                    pstmt->executeUpdate();
+                } else{
+                    std::cout << "pointer to connection object is null \n";
+                }
+            
+            //mySQL action end
 
             reaction_time = 0;
         } else clicky.shake_it(5);
@@ -48,7 +61,7 @@ void check_icon(std::vector<int>& pinned, std::vector<int>& selected_icons, int&
     }
 }
 
-bool lottery_game(sf::RenderWindow& window){
+bool lottery_game(sf::RenderWindow& window, sql::Connection* conn){
 
     unsigned long frames;
 
@@ -138,17 +151,17 @@ bool lottery_game(sf::RenderWindow& window){
                 }
 
                 if (event.key.code == sf::Keyboard::A){
-                    if(clicky_column == 0) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky);
+                    if(clicky_column == 0) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn);
                     else gear2.animate(7, 0, 3, 1);
                     clicky_column = 0;
                     selection = update_selection(clicky_row, clicky_column);
                 } else if (event.key.code == sf::Keyboard::S){
-                    if(clicky_column == 1) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky);
+                    if(clicky_column == 1) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn);
                     else gear2.animate(7, 0, 3, (clicky_column > 1));
                     clicky_column = 1;
                     selection = update_selection(clicky_row, clicky_column);
                 } else if (event.key.code == sf::Keyboard::D){
-                    if(clicky_column == 2) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky);
+                    if(clicky_column == 2) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn);
                     else gear2.animate(7, 0, 3, 0);
                     clicky_column = 2;
                     selection = update_selection(clicky_row, clicky_column);
