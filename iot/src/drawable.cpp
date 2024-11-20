@@ -7,8 +7,8 @@ _x(x), _y(y), _frame_x(first_frame_x), _SPRITESHEET_GRID_WIDTH(spritesheet_width
 }
 
 void drawable::update_position(){
-    int x_with_diff = _x;
-    int y_with_diff = _y;
+    int x_with_diff = _x + _extra_x;
+    int y_with_diff = _y + _extra_y;
 
     int sum_due_to_size_x = -(_SPRITESHEET_GRID_WIDTH)*(_size - 1);
     int sum_due_to_size_y = -(_SPRITESHEET_GRID_HEIGHT)*(_size - 1);

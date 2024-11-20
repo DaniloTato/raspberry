@@ -12,6 +12,7 @@
 #include <chrono>
 #include <ctime>
 #include <sstream>
+#include <stdexcept>
 
 #include <mysql_driver.h>
 #include <mysql_connection.h>
@@ -20,6 +21,9 @@
 #include <cppconn/exception.h>
 #include <cppconn/prepared_statement.h>
 #include <cppconn/datatype.h>
+
+#include <mosquitto.h>
+
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
@@ -36,6 +40,9 @@ extern int go_to_camera_y;
 extern float camera_speed;
 
 extern bool paused;
+
+extern int patient_id;
+extern int specialist_id;
 
 class fps_counter;
 
@@ -61,6 +68,8 @@ public:
     float _opacity = 255;
     double _x;
     double _y;
+    double _extra_x = 0;
+    double _extra_y = 0;
     float _paralax = 1;
     sf::Sprite _my_sprite;
     int _animation_request = 0;
@@ -195,6 +204,18 @@ private:
     ui* _symbol;
     bool _going_out = 0;
     int _face;
+};
+
+class circle_transition{
+public:
+    circle_transition();
+    void start_transition();
+    void draw(sf::RenderWindow& window);
+    bool ending();
+private:
+    float _radius = 1;
+    sf::CircleShape _circle;
+    bool _on = 0;
 };
 
 #endif

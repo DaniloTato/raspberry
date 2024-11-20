@@ -60,6 +60,9 @@
         "deque": "cpp",
         "forward_list": "cpp",
         "list": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "condition_variable": "cpp",
+        "queue": "cpp",
+        "thread": "cpp"
     }
 }

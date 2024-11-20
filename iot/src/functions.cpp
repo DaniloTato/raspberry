@@ -69,8 +69,10 @@ std::string comparison = "pass", int var = 0) {
 }
 
 template <typename T>
-void conditional_delete(std::vector<T*>& pointer_list, int (drawable::*getter)(),
+bool conditional_delete(std::vector<T*>& pointer_list, int (drawable::*getter)(),
 std::string comparison = "pass", int var = 0) {
+
+    bool deleted_something = false;
 
     for(int i = 0; i < pointer_list.size(); i++){
 
@@ -83,9 +85,12 @@ std::string comparison = "pass", int var = 0) {
             delete pointer_list[i];
             pointer_list.erase(pointer_list.begin() + i);
             i--;
+            deleted_something = true;
         }
 
     }
+
+    return deleted_something;
 }
 
 sf::Image add_border(const sf::Image& originalImage, unsigned int borderThickness) {
@@ -157,6 +162,45 @@ double avg(const std::vector<double>& vec) {
         suma += num;
     }
     return suma / vec.size();
+}
+
+int get_last_id(sql::Connection* conn){
+    std::string query_last_id = "SELECT LAST_INSERT_ID()";
+    std::unique_ptr<sql::PreparedStatement> pstmt_last_id(conn->prepareStatement(query_last_id));
+    std::unique_ptr<sql::ResultSet> res(pstmt_last_id->executeQuery());
+
+    if (res->next()){
+        return res->getInt(1);
+    }
+    throw std::runtime_error("Failed to fetch last insert ID.");
+}
+
+void add_patient_id(sql::Connection* conn, int patient_id) {
+    try {
+        // Check if patient exists
+        std::string query = "SELECT COUNT(*) FROM paciente WHERE ID_Paciente = ?";
+        std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
+        pstmt->setInt(1, patient_id);
+
+        std::unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
+        res->next(); // Move to the first (and only) row in the result
+
+        if (res->getInt(1) == 0) {
+            // Patient doesn't exist, insert the default patient
+            query = "INSERT INTO paciente (ID_Paciente, Nombre, Edad, Diagnóstico, Dirección) "
+                    "VALUES (?, 'Default Name', 0, 'Default Diagnosis', 'Default Address')";
+            std::unique_ptr<sql::PreparedStatement> pstmt_2(conn->prepareStatement(query));
+            pstmt_2->setInt(1, patient_id);
+            pstmt_2->executeUpdate();
+            std::cout << "new patient id added\n";
+        }
+    } catch (const sql::SQLException& e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        throw; // Rethrow the exception after logging
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
 }
 
 #endif

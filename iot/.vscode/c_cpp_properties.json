@@ -5,7 +5,9 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/opt/homebrew/Cellar/sfml/2.6.1/include",
-                "/usr/local/mysql-connector-c++-9.0.0/include/jdbc"
+                "/usr/local/mysql-connector-c++-9.0.0/include/jdbc",
+                "/opt/homebrew/Cellar/libpaho-mqtt/1.3.13_1/include",
+                "/opt/homebrew/Cellar/mosquitto/2.0.20/include"
             ],
             "defines": [],
             "macFrameworkPath": [

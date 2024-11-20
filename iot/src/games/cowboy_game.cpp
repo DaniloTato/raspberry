@@ -2,7 +2,7 @@
 #include "../functions.cpp"
 #include "../../include/macros.hpp"
 
-bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn){
+bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transition& transition){
 
     camera_x = 0;
     camera_y = -25;
@@ -98,6 +98,7 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn){
                             player._state = "lost";
                             enemy._state = "idle";
                             game_state = 3; //locked_gamestate_for_game_over;
+                            frames_passed = 0;
 
                             // if(reaction_times.size()){
                             //     mysqlx::Table testingTable = db.getTable("testing");
@@ -134,6 +135,7 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn){
                 player._state = "lost";
                 enemy._state = "won";
                 game_state = 2; //locked_gamestate_for_game_over;
+                frames_passed = 0;
 
                 // if(reaction_times.size()){
                 //     mysqlx::Table testingTable = db.getTable("testing");
@@ -216,12 +218,18 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn){
             if(game_state == 2){
                 game_over.setPosition(resized_window_width - 180, resized_window_height - 30);
                 window.draw(game_over);
+                if (frames_passed == 120) transition.start_transition();
             }
 
             if(game_state == 3){
                 disqualified.setPosition(resized_window_width - 180, resized_window_height - 30);
                 window.draw(disqualified);
+                if (frames_passed == 120) transition.start_transition();
             }
+
+            transition.draw(window);
+
+            if(transition.ending()) return 1;
 
             fpsc.draw(window);
             window.display();

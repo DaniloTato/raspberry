@@ -1,6 +1,11 @@
 #ifndef MACROS_H
 #define MACROS_H
 
+#define BROKER_ADDRESS "test.mosquitto.org"
+#define BROKER_PORT 1883
+#define CLIENT_ID "neurobox_client"
+#define TOPIC "test/topic"
+
 #define INITIALIZE_GAME_OBJECTS()   \
     sf::Text game_over;\
     game_over.setFont(font);\
@@ -35,7 +40,7 @@
     bar1.setFillColor(color_palette["black"]);\
     bar2.setFillColor(color_palette["black"]);\
 
-    #define RESTART_GLOBAL_VARS()  \
+#define RESTART_GLOBAL_VARS()  \
     SCREEN_WIDTH = 480;\
     SCREEN_HEIGHT = 240;\
     camera_zoom = 1;\
@@ -46,9 +51,17 @@
     go_to_camera_zoom = camera_zoom;\
     paused = 0;\
 
-    #define CAMERA_POSITION_UPDATE()\
+#define CAMERA_POSITION_UPDATE()\
     camera_x += (go_to_camera_x - camera_x) * camera_speed;\
     camera_y += (go_to_camera_y - camera_y) * camera_speed;\
     camera_zoom += (go_to_camera_zoom - camera_zoom) * 0.1;\
+
+#define MQTT_CONNECTION()\
+    MQTTAsync client;\
+    MQTTAsync_create(&client, address, clientId, MQTTCLIENT_PERSISTENCE_NONE, nullptr);\
+    MQTTAsync_setCallbacks(client, nullptr, nullptr, messageArrived, nullptr);\
+    MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;\
+    conn_opts.keepAliveInterval = 20;\
+    conn_opts.cleansession = 1;\
 
 #endif
