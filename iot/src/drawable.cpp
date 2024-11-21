@@ -10,8 +10,8 @@ void drawable::update_position(){
     int x_with_diff = _x + _extra_x;
     int y_with_diff = _y + _extra_y;
 
-    int sum_due_to_size_x = -(_SPRITESHEET_GRID_WIDTH)*(_size - 1);
-    int sum_due_to_size_y = -(_SPRITESHEET_GRID_HEIGHT)*(_size - 1);
+    int sum_due_to_size_x = -(_SPRITESHEET_GRID_WIDTH - (_size_position_mode == 1)*_SPRITESHEET_GRID_WIDTH*0.5)*(_size - 1);
+    int sum_due_to_size_y = -(_SPRITESHEET_GRID_HEIGHT - (_size_position_mode == 1)*_SPRITESHEET_GRID_HEIGHT*0.5)*(_size - 1);
     
     int sum_due_to_parallax_x = ((-2 + SCREEN_WIDTH * (-1 + _paralax)) / (2 * _paralax) + 1);
     int sum_due_to_parallax_y = ((-2 + SCREEN_HEIGHT * (-1 + _paralax)) / (2 * _paralax) + 1);

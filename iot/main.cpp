@@ -131,6 +131,7 @@ int main(){
 
     while(true){
         if(!selection_screen(window, game_selection)) break;
+        RESTART_GLOBAL_VARS();
         if(!functions[game_selection](window, conn, transition)) break;
         RESTART_GLOBAL_VARS();
         if(!end_game_screen(window)) break;

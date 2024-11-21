@@ -76,6 +76,7 @@ public:
     float _size = 1;
     float _animation_speed = 7;
     bool _invert_animation = 0;
+    int _size_position_mode = 0;
     
 protected:
     int _direction = 1;

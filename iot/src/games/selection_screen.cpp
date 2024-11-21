@@ -6,13 +6,18 @@ bool selection_screen(sf::RenderWindow& window, int& game_selection){
     game_selection = -1;
 
     std::vector<drawable*> letters;
-    int letters_starting_x = 50;
-    int letters_starting_y = 50;
+    int letters_starting_x = 15;
+    int letters_starting_y = 150;
     unsigned long frames = 0;
-    for(int i = 0; i < 12; i++){
-        if(i == 4 || i == 10) continue;
-        letters.push_back(new drawable(i*32 + letters_starting_x, 32 + letters_starting_y, "textures/bien_hecho.png", 32, 32, 1, i));
+    int frames_sice_selection = 0;
+    
+    for(int i = 0; i < 28; i++){
+        if(i == 9 || i == 19 || i == 22) continue;
+        letters.push_back(new drawable(i*16 + letters_starting_x, 16 + letters_starting_y, "textures/esperando_seleccion.png", 16, 16, 1, i));
     }
+
+    drawable logo((resized_window_width - 233)*0.5,70,"textures/neurobox_logo.png", 233, 61);
+    drawable squares(-130, -70, "textures/square_texture.png", 512, 256, 2);
 
     while (window.isOpen())
     {
@@ -36,9 +41,21 @@ bool selection_screen(sf::RenderWindow& window, int& game_selection){
 
         if(!paused){
 
-            if(game_selection != -1) return 1;
+            if(game_selection != -1) {
+                frames_sice_selection++;
+                go_to_camera_y = 500;
+                if(frames_sice_selection > 120) return 1;
+            }
+
+            CAMERA_POSITION_UPDATE();
+
+            logo._x = (resized_window_width - 233)*0.5;
+            logo._size_position_mode = 1;
+            logo._size = 1 + cos(frames/50.0f)*0.05;
 
             window.clear(sf::Color::White);
+
+            squares.draw(window);
 
             int j = 0;
             for(auto i: letters){
@@ -47,6 +64,7 @@ bool selection_screen(sf::RenderWindow& window, int& game_selection){
                 j++;
             }
 
+            logo.draw(window);
             window.display();
         }
 
