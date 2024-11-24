@@ -27,7 +27,7 @@ body {
 
 /* Encabezado */
 header {
-    background: #3a3f58; /* Color de fondo más suave y moderno */
+    background: linear-gradient(200deg, #6a11cb, #2575fc);
     color: white;
     text-align: center;
     padding: 40px 20px;

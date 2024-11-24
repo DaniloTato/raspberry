@@ -1,0 +1,116 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(200deg, #6a11cb, #2575fc);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.formulario {
+    width: 400px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+}
+
+.formulario h1 {
+    font-size: 24px;
+    color: #444;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.formulario form {
+    padding: 20px;
+}
+
+.username {
+    position: relative;
+    margin: 30px 0;
+}
+
+.username input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+.username input:focus {
+    border-color: #6a11cb;
+}
+
+.username label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #aaa;
+    font-size: 18px; /* Aumentar tamaño */
+    pointer-events: none;
+    transition: top 0.3s, font-size 0.3s;
+}
+
+.username input:focus + label,
+.username input:not(:placeholder-shown) + label {
+    top: -10px;
+    font-size: 18px; /* Ajustar para mantener la claridad al moverlo */
+    color: #6a11cb;
+}
+
+
+.recordar {
+    text-align: left;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.recordar a {
+    color: #6a11cb;
+    text-decoration: none;
+}
+
+.recordar a:hover {
+    text-decoration: underline;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    background: #6a11cb;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #2575fc;
+}
+
+.registrarse {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+.registrarse a {
+    color: #6a11cb;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.registrarse a:hover {
+    text-decoration: underline;
+}
