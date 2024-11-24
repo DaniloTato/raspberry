@@ -1,4 +1,4 @@
-#include "../include/iot.hpp"
+#include "../../include/iot.hpp"
 
 void flash_effect::draw(sf::RenderWindow &window){
     _frames++;

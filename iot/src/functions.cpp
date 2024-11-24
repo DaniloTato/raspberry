@@ -41,7 +41,6 @@ std::vector<int> random_indexes(int result_len, int max_index){
             random_num = 0;
             while(find_in_vector(res, random_num)){
                 random_num++;
-                std::cout << random_num << "\n";
             }
         }
         res.push_back(random_num);
@@ -70,8 +69,10 @@ std::string comparison = "pass", int var = 0) {
 }
 
 template <typename T>
-void drawable_conditional_delete(std::vector<T*>& pointer_list, int (drawable::*getter)(),
+bool conditional_delete(std::vector<T*>& pointer_list, int (drawable::*getter)(),
 std::string comparison = "pass", int var = 0) {
+
+    bool deleted_something = false;
 
     for(int i = 0; i < pointer_list.size(); i++){
 
@@ -84,8 +85,121 @@ std::string comparison = "pass", int var = 0) {
             delete pointer_list[i];
             pointer_list.erase(pointer_list.begin() + i);
             i--;
+            deleted_something = true;
         }
 
+    }
+
+    return deleted_something;
+}
+
+sf::Image add_border(const sf::Image& originalImage, unsigned int borderThickness) {
+    unsigned int width = originalImage.getSize().x;
+    unsigned int height = originalImage.getSize().y;
+
+    sf::Image borderedImage;
+    borderedImage.create(width + 2 * borderThickness, height + 2 * borderThickness, sf::Color::Transparent);
+
+    borderedImage.copy(originalImage, borderThickness, borderThickness);
+
+    for (unsigned int y = borderThickness; y < height + borderThickness; ++y) {
+        for (unsigned int x = borderThickness; x < width + borderThickness; ++x) {
+            sf::Color pixelColor = originalImage.getPixel(x - borderThickness, y - borderThickness);
+            if (pixelColor.a != 0) {
+                int right_limit = borderThickness;
+                for (int offsetY = -borderThickness; offsetY <= right_limit; ++offsetY) {
+                    for (int offsetX = -borderThickness; offsetX <= right_limit; ++offsetX) {
+                        if (offsetX == 0 && offsetY == 0)
+                            continue;
+                        unsigned int newX = x + offsetX;
+                        unsigned int newY = y + offsetY;
+
+                        if (newX >= 0 && newX < borderedImage.getSize().x && newY >= 0 && newY < borderedImage.getSize().y) {
+                            if (borderedImage.getPixel(newX, newY).a == 0) {
+                                borderedImage.setPixel(newX, newY, sf::Color(255,255,255));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return borderedImage;
+}
+
+sf::Image crop_image(const sf::Image& originalImage, unsigned int x, unsigned int y, unsigned int width, unsigned int height) {
+    sf::Image croppedImage;
+    
+    croppedImage.create(width, height);
+    croppedImage.copy(originalImage, 0, 0, sf::IntRect(x, y, width, height));
+
+    return croppedImage;
+}
+
+template <typename T>
+void delete_ptr_vector(std::vector<T*>& vec){
+    for(auto i : vec){
+        delete i;
+    }
+    vec.clear();
+}
+
+std::string get_date() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+    std::tm* local_time = std::localtime(&now_time);
+
+    std::ostringstream oss;
+    oss << std::put_time(local_time, "%Y-%m-%d");
+    return oss.str();
+}
+
+
+double avg(const std::vector<double>& vec) {
+    double suma = 0;
+    for (auto num : vec) {
+        suma += num;
+    }
+    return suma / vec.size();
+}
+
+int get_last_id(sql::Connection* conn){
+    std::string query_last_id = "SELECT LAST_INSERT_ID()";
+    std::unique_ptr<sql::PreparedStatement> pstmt_last_id(conn->prepareStatement(query_last_id));
+    std::unique_ptr<sql::ResultSet> res(pstmt_last_id->executeQuery());
+
+    if (res->next()){
+        return res->getInt(1);
+    }
+    throw std::runtime_error("Failed to fetch last insert ID.");
+}
+
+void add_patient_id(sql::Connection* conn, int patient_id) {
+    try {
+        // Check if patient exists
+        std::string query = "SELECT COUNT(*) FROM paciente WHERE ID_Paciente = ?";
+        std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
+        pstmt->setInt(1, patient_id);
+
+        std::unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
+        res->next(); // Move to the first (and only) row in the result
+
+        if (res->getInt(1) == 0) {
+            // Patient doesn't exist, insert the default patient
+            query = "INSERT INTO paciente (ID_Paciente, Nombre, Edad, Diagnóstico, Dirección) "
+                    "VALUES (?, 'Default Name', 0, 'Default Diagnosis', 'Default Address')";
+            std::unique_ptr<sql::PreparedStatement> pstmt_2(conn->prepareStatement(query));
+            pstmt_2->setInt(1, patient_id);
+            pstmt_2->executeUpdate();
+            std::cout << "new patient id added\n";
+        }
+    } catch (const sql::SQLException& e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        throw; // Rethrow the exception after logging
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
     }
 }
 
