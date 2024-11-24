@@ -64,7 +64,7 @@ void check_icon(std::vector<int>& pinned, std::vector<int>& selected_icons, int&
     }
 }
 
-bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transition& transition){
+bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transition& transition, sf::RectangleShape& fade){
 
     unsigned long frames;
     unsigned long duration;
@@ -214,6 +214,8 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
             }
         }
 
+        if (fade.getFillColor().a > 0) fade.setFillColor(sf::Color(0,0,0, fade.getFillColor().a - 8));
+
         //////////////// game logic start
         if(!paused){
 
@@ -280,6 +282,7 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
             window.draw(score_text);
 
             transition.draw(window);
+            window.draw(fade);
 
             window.display();
 

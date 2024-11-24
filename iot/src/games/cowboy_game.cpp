@@ -2,7 +2,7 @@
 #include "../functions.cpp"
 #include "../../include/macros.hpp"
 
-bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transition& transition){
+bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transition& transition, sf::RectangleShape& fade){
 
     camera_x = 0;
     camera_y = -25;
@@ -120,9 +120,12 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
             }
         }
 
+        if (fade.getFillColor().a > 0) fade.setFillColor(sf::Color(0,0,0, fade.getFillColor().a - 8));
+
         //////////////// game logic start
 
         if(!paused){
+
             frames_passed++;
 
             if(!game_state)time_until_fire--;
@@ -228,6 +231,8 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
             }
 
             transition.draw(window);
+
+            window.draw(fade);
 
             if(transition.ending()) return 1;
 

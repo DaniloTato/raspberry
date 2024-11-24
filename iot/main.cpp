@@ -64,7 +64,7 @@ void message_callback(struct mosquitto *mosq, void *userdata, const struct mosqu
     }
 }
 
-typedef bool (*function_ptr)(sf::RenderWindow&, sql::Connection*, circle_transition&);
+typedef bool (*function_ptr)(sf::RenderWindow&, sql::Connection*, circle_transition&,  sf::RectangleShape&);
 
 int main(){
 
@@ -128,11 +128,12 @@ int main(){
     window.setFramerateLimit(60);
 
     circle_transition transition;
+    sf::RectangleShape fade;
 
     while(true){
-        if(!selection_screen(window, game_selection)) break;
+        if(!selection_screen(window, game_selection, fade)) break;
         RESTART_GLOBAL_VARS();
-        if(!functions[game_selection](window, conn, transition)) break;
+        if(!functions[game_selection](window, conn, transition, fade)) break;
         RESTART_GLOBAL_VARS();
         if(!end_game_screen(window)) break;
         RESTART_GLOBAL_VARS();
