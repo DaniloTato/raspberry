@@ -11,22 +11,22 @@
 
     <div class="formulario">
         <h1>Inicio de Sesión</h1>
-<form method="post" action="login.php">
-    <div class="username">
-        <input type="text" id="username" name="name" required>
-        <label for="username">Nombre de Usuario</label>
+        <form method="post" action="login.php">
+            <div class="username">
+                <input type="text" id="username" name="name" required>
+                <label for="username">Nombre de Usuario</label>
+            </div>
+            <div class="password">
+                <input type="password" id="password" name="password" required>
+                <label for="password">Contraseña</label>
+            </div>
+            <input type="submit" value="Iniciar" class="btn">
+        </form>
+        
+        <form method="get" action="NuevoUsuario.php">
+            <input type="submit" value="Agregar Usuario" class="btn agregar-btn">
+        </form>
     </div>
-    <div class="password">
-        <input type="password" id="password" name="password" required>
-        <label for="password">Contraseña</label>
-    </div>
-    <input type="submit" value="Iniciar" class="btn">
-</form>
 
-    </div>
-
-    <?php
-        include("registrar.php");
-    ?>
 </body>
 </html>

@@ -335,6 +335,14 @@ CREATE TABLE `tutor` (
   PRIMARY KEY (`ID_Paciente`),
   CONSTRAINT `tutor_ibfk_1` FOREIGN KEY (`ID_Paciente`) REFERENCES `paciente` (`ID_Paciente`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE,
+    contraseña VARCHAR(255) NOT NULL
+);
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
