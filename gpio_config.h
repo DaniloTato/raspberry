@@ -9,11 +9,16 @@ const int BUTTON2 = 6;
 const int BUTTON3 = 13;
 const int BUTTON4 = 19;
 
+
 // GPIOs para LEDs
 const int LED1 = 14;
 const int LED2 = 15;
 const int LED3 = 18;
-const int LED3 = 22;
+const int LED4 = 23;
+
+// GPIOs para buzzer
+const int BUZZER1 = 24;
+
 
 // Umbral para LDR
 const int LDR_THRESHOLD = 700;
@@ -25,18 +30,19 @@ inline void configureGPIO() {
     pinMode(BUTTON3, INPUT);
     pinMode(BUTTON4, INPUT);
 
-    // Outputs (LEDs)
+    // Outputs (LEDs y Buzzer)
     pinMode(LED1, OUTPUT);
     pinMode(LED2, OUTPUT);
     pinMode(LED3, OUTPUT);
-    pinModer(LED4, OUTPUT)
+    pinMode(LED4, OUTPUT);
+    pinMode(BUZZER1, OUTPUT);
 
-    //Inicialización de LEDs
+    // Inicialización de LEDs y buzzer apagados
     digitalWrite(LED1, LOW);
     digitalWrite(LED2, LOW);
     digitalWrite(LED3, LOW);
     digitalWrite(LED4, LOW);
-
+    digitalWrite(BUZZER1, LOW);
 }
 
 void leds();
