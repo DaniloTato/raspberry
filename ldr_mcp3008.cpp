@@ -1,13 +1,11 @@
 #include <iostream>
 #include <wiringPiSPI.h>
-#include "gpio_config.h"
-
 using namespace std;
 
 #define SPI_CHANNEL 0 // Canal SPI 0
 #define SPI_SPEED 1000000 // Velocidad SPI en Hz
 
-// Lectura del MCP3008
+// Leer del MCP3008
 int readMCP3008(int channel) {
     if (channel < 0 || channel > 7) {
         cerr << "Canal inválido. Debe estar entre 0 y 7." << endl;
@@ -25,32 +23,6 @@ int readMCP3008(int channel) {
     return resultado;
 }
 
-// Control de LEDs basado en el LDR
-void leds() {
-    cout << "Leyendo valores del LDR (Ctrl+C para terminar)" << endl;
-
-    while (true) {
-        // Leer el valor del LDR en el canal 0
-        int ldrValue = readMCP3008(0);
-
-        // Encender LEDs si están por debajo del umbral (700)
-        if (ldrValue < LDR_THRESHOLD) {
-            digitalWrite(LED1, HIGH);
-            digitalWrite(LED2, HIGH);
-            digitalWrite(LED3, HIGH);
-            digitalWrite(LED4, HIGH);
-        } else {
-            digitalWrite(LED1, LOW);
-            digitalWrite(LED2, LOW);
-            digitalWrite(LED3, LOW);
-            digitalWrite(LED4, LOW);
-        }
-
-        cout << "Valor LDR: " << ldrValue << endl;
-        delay(500); // Delay de 0.5s
-    }
-}
-
 int main() {
     // Inicializar WiringPi y SPI
     if (wiringPiSetup() == -1) {
@@ -63,11 +35,13 @@ int main() {
         return -1;
     }
 
-    // Configurar GPIO
-    configureGPIO();
+    cout << "Leyendo valores del LDR (Ctrl+C para salir):" << endl;
 
-    // Lógica para el encendido de los LEDs
-    leds();
+    while (true) {
+        int ldrValue = readMCP3008(0); // Leer del canal 0
+        cout << "Valor LDR: " << ldrValue << endl;
+        delay(500); // Esperar 500 ms
+    }
 
     return 0;
 }
