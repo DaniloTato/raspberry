@@ -1,12 +1,20 @@
-#include <iostream>
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
-#include <unistd.h> // Para sleep
+#include <iostream>
+#include <csignal>  // Para manejar señales (Ctrl+C)
+#include <unistd.h> // Para usleep
+using namespace std;
 
 #define SPI_CHANNEL 0 // Canal SPI 0
 #define SPI_SPEED 1000000 // Velocidad SPI en Hz
 
-using namespace std;
+bool running = true; // Bandera para detener el programa
+
+// Manejador de señal para capturar Ctrl+C
+void signalHandler(int signum) {
+    cout << "\nDeteniendo la lectura del LDR..." << endl;
+    running = false; // Cambiar la bandera para salir del bucle
+}
 
 // Función para leer del MCP3008
 int readMCP3008(int channel) {
@@ -27,6 +35,9 @@ int readMCP3008(int channel) {
 }
 
 int main() {
+    // Configurar el manejador de señal para Ctrl+C
+    signal(SIGINT, signalHandler);
+
     // Inicializar WiringPi y SPI
     if (wiringPiSetup() == -1) {
         cerr << "Error al configurar WiringPi." << endl;
@@ -38,16 +49,14 @@ int main() {
         return -1;
     }
 
-    cout << "Leyendo valores del LDR..." << endl;
+    cout << "Leyendo valores del LDR... (Presiona Ctrl+C para detener)" << endl;
 
-    try {
-        for (int i = 0; i < 10; ++i) { // Leer 10 veces
-            int valor = readMCP3008(0); // Leer el canal 0
+    while (running) { // Bucle infinito hasta que se detenga manualmente
+        int valor = readMCP3008(0); // Leer el canal 0
+        if (valor != -1) {
             cout << "Valor LDR: " << valor << endl;
-            usleep(500000); // Esperar 500 ms
         }
-    } catch (...) {
-        cerr << "Error inesperado." << endl;
+        usleep(500000); // Esperar 500 ms (0.5 segundos)
     }
 
     cout << "Programa terminado." << endl;
