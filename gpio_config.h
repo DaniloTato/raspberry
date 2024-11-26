@@ -16,6 +16,10 @@ const int LED2 = 15;
 const int LED3 = 18;
 const int LED4 = 23;
 
+//GPIOs para LEDs de inicio y fin de juego
+const int LED5 = 17;
+const int LED6 = 27;
+
 // GPIOs para buzzer
 const int BUZZER1 = 24;
 
@@ -35,6 +39,8 @@ inline void configureGPIO() {
     pinMode(LED2, OUTPUT);
     pinMode(LED3, OUTPUT);
     pinMode(LED4, OUTPUT);
+    pinMode(LED5, OUTPUT);
+    pinMode(LED6, OUTPUT);
     pinMode(BUZZER1, OUTPUT);
 
     // Inicialización de LEDs y buzzer apagados
@@ -42,9 +48,12 @@ inline void configureGPIO() {
     digitalWrite(LED2, LOW);
     digitalWrite(LED3, LOW);
     digitalWrite(LED4, LOW);
+    digitalWrite(LED5, LOW);
+    digitalWrite(LED6, LOW);
     digitalWrite(BUZZER1, LOW);
 }
 
 void leds();
 
 #endif
+  
