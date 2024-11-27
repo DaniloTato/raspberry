@@ -1,5 +1,8 @@
-#include <iostream>
+#include <wiringPi.h>
 #include <wiringPiSPI.h>
+#include <iostream>
+#include <csignal>  // Para manejar señales (Ctrl+C)
+#include <unistd.h> // Para usleep
 #include "gpio_config.h"
 
 using namespace std;
@@ -7,7 +10,15 @@ using namespace std;
 #define SPI_CHANNEL 0 // Canal SPI 0
 #define SPI_SPEED 1000000 // Velocidad SPI en Hz
 
-// Lectura del MCP3008
+bool running = true; // Bandera para detener el programa
+
+// Manejador de señal para capturar Ctrl+C
+void signalHandler(int signum) {
+    cout << "\nDeteniendo la lectura del LDR..." << endl;
+    running = false; // Cambiar la bandera para salir del bucle
+}
+
+// Función para leer del MCP3008
 int readMCP3008(int channel) {
     if (channel < 0 || channel > 7) {
         cerr << "Canal inválido. Debe estar entre 0 y 7." << endl;
@@ -25,33 +36,10 @@ int readMCP3008(int channel) {
     return resultado;
 }
 
-// Control de LEDs basado en el LDR
-void leds() {
-    cout << "Leyendo valores del LDR (Ctrl+C para terminar)" << endl;
-
-    while (true) {
-        // Leer el valor del LDR en el canal 0
-        int ldrValue = readMCP3008(0);
-
-        // Encender LEDs si están por debajo del umbral (700)
-        if (ldrValue < LDR_THRESHOLD) {
-            digitalWrite(LED1, HIGH);
-            digitalWrite(LED2, HIGH);
-            digitalWrite(LED3, HIGH);
-            digitalWrite(LED4, HIGH);
-        } else {
-            digitalWrite(LED1, LOW);
-            digitalWrite(LED2, LOW);
-            digitalWrite(LED3, LOW);
-            digitalWrite(LED4, LOW);
-        }
-
-        cout << "Valor LDR: " << ldrValue << endl;
-        delay(500); // Delay de 0.5s
-    }
-}
-
 int main() {
+    // Configurar el manejador de señal para Ctrl+C
+    signal(SIGINT, signalHandler);
+
     // Inicializar WiringPi y SPI
     if (wiringPiSetup() == -1) {
         cerr << "Error al configurar WiringPi." << endl;
@@ -63,11 +51,22 @@ int main() {
         return -1;
     }
 
-    // Configurar GPIO
+    // Configurar GPIOs
     configureGPIO();
 
-    // Lógica para el encendido de los LEDs
-    leds();
+    cout << "Leyendo valores del LDR... (Presiona Ctrl+C para detener)" << endl;
 
+    while (running) { // Bucle infinito hasta que se detenga manualmente
+        int valor = readMCP3008(0); // Leer el canal 0
+        if (valor != -1) {
+            cout << "Valor LDR: " << valor << endl;
+
+            // Manejar LEDs según el valor del LDR
+            manejarLEDs(valor);
+        }
+        usleep(500000); // Esperar 500 ms (0.5 segundos)
+    }
+
+    cout << "Programa terminado." << endl;
     return 0;
 }

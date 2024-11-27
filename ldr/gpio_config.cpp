@@ -1,32 +1,31 @@
-#include <wiringPi.h>
 #include "gpio_config.h"
 
+// Configurar los GPIOs
 void configureGPIO() {
-    // Inputs (Botones)
-    pinMode(BUTTON1, INPUT);
-    pinMode(BUTTON2, INPUT);
-    pinMode(BUTTON3, INPUT);
-    pinMode(BUTTON4, INPUT);
-
-    // Outputs (LEDs controlados por el LDR)
+    // Configuración de LEDs como salida
     pinMode(LED1, OUTPUT);
     pinMode(LED2, OUTPUT);
     pinMode(LED3, OUTPUT);
     pinMode(LED4, OUTPUT);
 
-    // Outputs (LEDs de inicio y fin de juego)
-    pinMode(LED5, OUTPUT);
-    pinMode(LED6, OUTPUT);
-
-    // Outputs (Buzzer)
-    pinMode(BUZZER1, OUTPUT);
-
-    // Inicialización de LEDs y buzzer apagados
+    // Inicializar LEDs apagados
     digitalWrite(LED1, LOW);
     digitalWrite(LED2, LOW);
     digitalWrite(LED3, LOW);
     digitalWrite(LED4, LOW);
-    digitalWrite(LED5, LOW);
-    digitalWrite(LED6, LOW);
-    digitalWrite(BUZZER1, LOW);
+}
+
+// Controlar los LEDs según el valor del LDR
+void manejarLEDs(int valorLDR) {
+    if (valorLDR < LDR_THRESHOLD) {
+        digitalWrite(LED1, HIGH);
+        digitalWrite(LED2, HIGH);
+        digitalWrite(LED3, HIGH);
+        digitalWrite(LED4, HIGH);
+    } else {
+        digitalWrite(LED1, LOW);
+        digitalWrite(LED2, LOW);
+        digitalWrite(LED3, LOW);
+        digitalWrite(LED4, LOW);
+    }
 }
