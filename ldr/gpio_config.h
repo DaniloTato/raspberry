@@ -28,7 +28,7 @@ const int LDR_THRESHOLD = 700;
 // Declaración de la función para configurar GPIO
 void configureGPIO();
 
-// Declaración de la función para manejar los LEDs
+// Declaración de la función para manejar LEDs
 void leds();
 
 #endif
