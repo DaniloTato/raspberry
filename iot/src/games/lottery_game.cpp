@@ -23,37 +23,29 @@ int update_selection(int row, int column){
 
 void check_icon(std::vector<int>& pinned, std::vector<int>& selected_icons, int& selection, std::vector<card*>& cards, std::vector<drawable*> icons, 
     std::vector<coin*>& coins, std::vector<scrolling_text*>& scrolling_texts, unsigned int &reaction_time, const int SCORE_TIME_TOLERANCE, 
-    unsigned long& score, animated_pointer& clicky, sql::Connection* conn, const int game_id){
+    unsigned long& score, animated_pointer& clicky, sql::Connection* conn, const int game_id, int& errores, unsigned int& duration){
 
     if(!find_in_vector(pinned, selection) && cards.size()){
         if(icons[selection] -> get_frame_x() == cards.front() -> get_symbol_costume()){
             coins.push_back(new coin(icons[selection]->_x + 16, -50, icons[selection]->_y, selection));
             pinned.push_back(selection);
             if (!next_card(cards, selected_icons)){
+
                 scrolling_texts.push_back(new scrolling_text(resized_window_width, 0, "textures/lottery/loteria.png", 10, 2));
+
+                //mySQL action
+
+                    insert_into_results(conn, errores, game_id, "errores totales");
+                    insert_game_duration(conn, duration/57, game_id);
+            
+                //mySQL action end
             }
             int score_to_add = 100 - (reaction_time/SCORE_TIME_TOLERANCE);
             if(score_to_add > 0) score += score_to_add;
 
             //mySQL action
 
-                std::string query = "INSERT INTO resultados (Puntuación, ID_Juego, Tipo) VALUES (?, ?, ?)";
-                std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
-                pstmt->setDouble(1, reaction_time/57.0f);
-                pstmt->setInt(2, game_id);
-                pstmt->setInt(3, 1); //"tiempo para selección correcta"
-
-                pstmt->executeUpdate();
-
-                int results_id = get_last_id(conn);
-
-                query = "INSERT INTO `paciente_a_resultado` (ID_Paciente, ID_Resultado) VALUES (?, ?)";
-                std::unique_ptr<sql::PreparedStatement> pstmt_sk(conn->prepareStatement(query));
-                pstmt_sk->setInt(1, patient_id);
-                pstmt_sk->setInt(2, results_id);
-
-                pstmt_sk->executeUpdate();
-
+                insert_into_results(conn, reaction_time/57.0f, game_id, "tiempo de selección correcta");
             
             //mySQL action end
 
@@ -61,13 +53,14 @@ void check_icon(std::vector<int>& pinned, std::vector<int>& selected_icons, int&
         } else clicky.shake_it(5);
     } else{
         clicky.shake_it(5);
+        errores++;
+        score -= 50;
     }
 }
 
 bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transition& transition, sf::RectangleShape& fade){
 
     unsigned long frames;
-    unsigned long duration;
 
     camera_zoom = 2;
     go_to_camera_zoom = 2;
@@ -81,6 +74,9 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
     unsigned long score = 0;
     unsigned int reaction_time = 0;
     const int SCORE_TIME_TOLERANCE = 6;
+    unsigned int duration = 0;
+
+    int errores = 0;
 
     int clicky_row = 0;
     int clicky_column = 0;
@@ -104,28 +100,14 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
 
     //mySQL action
 
-        std::string query = "INSERT INTO juego (Propósito, Nombre, `Notas adicionales`) VALUES (?, ?, ?)";
-        std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
-        pstmt -> setString(1,"Coordinación mano ojo.");
-        pstmt -> setString(2,"Lotería");
-        pstmt -> setString(3,"Sin notas");
-
-        pstmt->executeUpdate();
-
-        int game_id = get_last_id(conn);
-
-        query = "INSERT INTO `paciente_a_juego` (ID_Paciente, ID_Juego) VALUES (?, ?)";
-        std::unique_ptr<sql::PreparedStatement> pstmt_sk(conn->prepareStatement(query));
-        pstmt_sk->setInt(1, patient_id);
-        pstmt_sk->setInt(2, game_id);
-
-        pstmt_sk->executeUpdate();
+        int game_id = insert_into_juego(conn, "Coordinación mano ojo.", "Lotería", "Sin notas.");
 
     //mySQL action end
 
     int icon_x = 0;
     int icon_y = 0;
     int line_limit = 3;
+
     for (int i = 0; i < selected_icons.size(); i++){
         icons.push_back(new drawable(icon_x, icon_y, "textures/lottery/icons.png", 32, 32, 1, selected_icons[i]));
         icon_x += 32;
@@ -147,6 +129,8 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
     while (window.isOpen())
     {
         sf::Event event;
+
+        duration++;
 
         while (window.pollEvent(event))
         {
@@ -177,21 +161,21 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
 
                 if (event.key.code == sf::Keyboard::A){
 
-                    if(clicky_column == 0) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id);
+                    if(clicky_column == 0) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id, errores, duration);
                     else gear2.animate(7, 0, 3, 1);
                     clicky_column = 0;
                     selection = update_selection(clicky_row, clicky_column);
 
                 } else if (event.key.code == sf::Keyboard::S){
 
-                    if(clicky_column == 1) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id);
+                    if(clicky_column == 1) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id, errores, duration);
                     else gear2.animate(7, 0, 3, (clicky_column > 1));
                     clicky_column = 1;
                     selection = update_selection(clicky_row, clicky_column);
 
                 } else if (event.key.code == sf::Keyboard::D){
 
-                    if(clicky_column == 2) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id);
+                    if(clicky_column == 2) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id, errores, duration);
                     else gear2.animate(7, 0, 3, 0);
                     clicky_column = 2;
                     selection = update_selection(clicky_row, clicky_column);
@@ -206,12 +190,12 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
                 }
             }
 
-            if(event.type == sf::Event::Resized){
-                sf::FloatRect view(0, 0, event.size.width, event.size.height);
-                window.setView(sf::View(view));
-                resized_window_width = event.size.width;
-                resized_window_height = event.size.height;
-            }
+            // if(event.type == sf::Event::Resized){
+            //     sf::FloatRect view(0, 0, event.size.width, event.size.height);
+            //     window.setView(sf::View(view));
+            //     resized_window_width = event.size.width;
+            //     resized_window_height = event.size.height;
+            // }
         }
 
         if (fade.getFillColor().a > 0) fade.setFillColor(sf::Color(0,0,0, fade.getFillColor().a - 8));

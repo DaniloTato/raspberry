@@ -155,6 +155,20 @@ std::string get_date() {
     return oss.str();
 }
 
+std::string time_string(int seconds) {
+    int hours = seconds / 3600;
+    seconds %= 3600;
+    int minutes = seconds / 60;
+    seconds %= 60;
+
+    std::ostringstream timeStream;
+    timeStream << std::setw(2) << std::setfill('0') << hours << ":" 
+               << std::setw(2) << std::setfill('0') << minutes << ":" 
+               << std::setw(2) << std::setfill('0') << seconds;
+
+    return timeStream.str();
+}
+
 
 double avg(const std::vector<double>& vec) {
     double suma = 0;
@@ -201,6 +215,57 @@ void add_patient_id(sql::Connection* conn, int patient_id) {
         std::cerr << "Error: " << e.what() << std::endl;
         throw;
     }
+}
+
+void insert_into_results(sql::Connection* conn, double puntuacion, int game_id, std::string type){
+    std::string query = "INSERT INTO resultados (Puntuación, ID_Juego, Tipo) VALUES (?, ?, ?)";
+    std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
+    pstmt->setDouble(1, puntuacion);
+    pstmt->setInt(2, game_id);
+    pstmt->setString(3, type); //"tiempo para selección correcta"
+
+    pstmt->executeUpdate();
+
+    int results_id = get_last_id(conn);
+
+    query = "INSERT INTO `paciente_a_resultado` (ID_Paciente, ID_Resultado) VALUES (?, ?)";
+    std::unique_ptr<sql::PreparedStatement> pstmt_sk(conn->prepareStatement(query));
+    pstmt_sk->setInt(1, patient_id);
+    pstmt_sk->setInt(2, results_id);
+
+    pstmt_sk->executeUpdate();
+}
+
+int insert_into_juego(sql::Connection* conn, std::string proposito, std::string nombre, std::string notas = "Sin notas."){
+    std::string query = "INSERT INTO juego (Propósito, Nombre, `Notas adicionales`, Fecha) VALUES (?, ?, ?, ?)";
+    std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
+    pstmt -> setString(1,proposito);
+    pstmt -> setString(2,nombre);
+    pstmt -> setString(3,notas);
+    pstmt -> setString(4, get_date());
+
+    pstmt->executeUpdate();
+
+    int game_id = get_last_id(conn);
+
+    query = "INSERT INTO `paciente_a_juego` (ID_Paciente, ID_Juego) VALUES (?, ?)";
+    std::unique_ptr<sql::PreparedStatement> pstmt_sk(conn->prepareStatement(query));
+    pstmt_sk->setInt(1, patient_id);
+    pstmt_sk->setInt(2, game_id);
+
+    pstmt_sk->executeUpdate();
+
+    return game_id;
+}
+
+void insert_game_duration(sql::Connection* conn, int seconds, int id_juego){
+
+    std::cout << "id" << id_juego << "\n";
+    std::string query = "UPDATE juego SET Duracion = ? WHERE ID_Juego = " + std::to_string(id_juego);
+    std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(query));
+    pstmt->setString(1, time_string(seconds));
+
+    pstmt->executeUpdate();
 }
 
 #endif
