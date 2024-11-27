@@ -40,6 +40,7 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
     int tolerance = 60;
     int min_tolerance = 3;
     float frames_passed = 0;
+    unsigned int duration = 0;
     drawable sand(-55,100, "textures/scenario.png", 586, 104);
     drawable sun(-50,-50, "textures/sun.png", 90, 76, 100);
     drawable fuego((SCREEN_WIDTH - 80)*0.5,80, "textures/fuego.png", 80, 46);
@@ -51,11 +52,19 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
     bar1.setFillColor(color_palette["black"]);
     bar2.setFillColor(color_palette["black"]);
 
+    //mySQL action
+
+        int game_id = insert_into_juego(conn, "Tiempo de reacción.", "Cowboy", "Sin notas.");
+
+    //mySQL action end
+
     ////////////////////////////////////////////// start of main game loop
 
     while (window.isOpen())
     {
         sf::Event event;
+
+        duration++;
 
         while (window.pollEvent(event))
         {
@@ -92,6 +101,10 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
                             // .values(get_date(), reaction, "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción")
                             // .execute();
 
+                            //mySQL action
+                                insert_into_results(conn, reaction, game_id, "tiempo de reacción");
+                            //mySQL action end
+
                         }else{
                             //disqualified
                             show_fuego = 0;
@@ -106,18 +119,23 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
                             //     .values(get_date(), avg(reaction_times), "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción_promedio_de_la_partida")
                             //     .execute();
                             // }
+
+                            //mySQL action
+                                if(reaction_times.size()) insert_into_results(conn, avg(reaction_times), game_id, "tiempo de reacción promedio");
+                                insert_game_duration(conn, duration/57, game_id);
+                            //mySQL action end
                         }
                         
                     }
                 }
             }
 
-            if(event.type == sf::Event::Resized){
-                sf::FloatRect view(0, 0, event.size.width, event.size.height);
-                window.setView(sf::View(view));
-                resized_window_width = event.size.width;
-                resized_window_height = event.size.height;
-            }
+            // if(event.type == sf::Event::Resized){
+            //     sf::FloatRect view(0, 0, event.size.width, event.size.height);
+            //     window.setView(sf::View(view));
+            //     resized_window_width = event.size.width;
+            //     resized_window_height = event.size.height;
+            // }
         }
 
         if (fade.getFillColor().a > 0) fade.setFillColor(sf::Color(0,0,0, fade.getFillColor().a - 8));
@@ -146,6 +164,11 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
                 //     .values(get_date(), avg(reaction_times), "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción_promedio_de_la_partida")
                 //     .execute();
                 // }
+
+                //mySQL action
+                    if(reaction_times.size()) insert_into_results(conn, avg(reaction_times), game_id, "tiempo de reacción promedio");
+                    insert_game_duration(conn, duration/57, game_id);
+                //mySQL action end
             }
 
             if(player._state == "dancing"){

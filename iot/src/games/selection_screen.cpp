@@ -33,13 +33,23 @@ bool selection_screen(sf::RenderWindow& window, int& game_selection, sf::Rectang
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            if(event.type == sf::Event::Resized){
-                sf::FloatRect view(0, 0, event.size.width, event.size.height);
-                window.setView(sf::View(view));
-                resized_window_width = event.size.width;
-                resized_window_height = event.size.height;
+            // if(event.type == sf::Event::Resized){
+            //     sf::FloatRect view(0, 0, event.size.width, event.size.height);
+            //     window.setView(sf::View(view));
+            //     resized_window_width = event.size.width;
+            //     resized_window_height = event.size.height;
+            // }
+
+            if (event.key.code == sf::Keyboard::Num1){
+                game_selection = 0;
             }
-        }
+            if (event.key.code == sf::Keyboard::Num2){
+                game_selection = 1;
+            }
+            // if (event.key.code == sf::Keyboard::Num3){
+            //     game_selection = 2;
+            // }
+    }
 
         //////////////// game logic start
 
