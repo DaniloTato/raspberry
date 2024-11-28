@@ -1,29 +1,28 @@
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 #include <iostream>
-#include <csignal>  // Para manejar señales (Ctrl+C)
-#include <unistd.h> // Para usleep
+#include <csignal>  /
+#include <unistd.h>  
 
 using namespace std;
 
-#define SPI_CHANNEL 0  // Canal SPI 0
-#define SPI_SPEED 1000000  // Velocidad SPI en Hz
+#define SPI_CHANNEL 0  
+#define SPI_SPEED 1000000  
 
 // GPIOs para LEDs
-const int LED1 = 14;
-const int LED2 = 15;
-const int LED3 = 18;
-const int LED4 = 23;
+const int LED1 = 15;
+const int LED2 = 16;
+const int LED3 = 4;
+const int LED4 = 5;
 
 // Umbral para LDR
 const int LDR_THRESHOLD = 700;
 
-bool running = true;  // Bandera para detener el programa
+bool running = true;
 
-// Manejador de señal para capturar Ctrl+C
 void signalHandler(int signum) {
-    cout << "\nDeteniendo la lectura del LDR..." << endl;
-    running = false;  // Cambiar la bandera para salir del bucle
+    cout << "\nDeteniendo la lectura del LDR" << endl;
+    running = false; 
 }
 
 // Configurar GPIOs
@@ -55,7 +54,7 @@ void manejarLEDs(int valorLDR) {
     }
 }
 
-// Función para leer del MCP3008
+// Función para leer el ADC MCP3008
 int readMCP3008(int channel) {
     if (channel < 0 || channel > 7) {
         cerr << "Canal inválido. Debe estar entre 0 y 7." << endl;
@@ -74,10 +73,8 @@ int readMCP3008(int channel) {
 }
 
 int main() {
-    // Configurar el manejador de señal para Ctrl+C
-    signal(SIGINT, signalHandler);
 
-    // Inicializar WiringPi y SPI
+    signal(SIGINT, signalHandler);
     if (wiringPiSetup() == -1) {
         cerr << "Error al configurar WiringPi." << endl;
         return -1;
@@ -93,15 +90,15 @@ int main() {
 
     cout << "Leyendo valores del LDR... (Presiona Ctrl+C para detener)" << endl;
 
-    while (running) {  // Bucle infinito hasta que se detenga manualmente
-        int valor = readMCP3008(0);  // Leer el canal 0
+    while (running) {  
+        int valor = readMCP3008(0);  
         if (valor != -1) {
             cout << "Valor LDR: " << valor << endl;
 
-            // Manejar LEDs según el valor del LDR
+            // Encendido de LEDs según el valor del LDR
             manejarLEDs(valor);
         }
-        usleep(500000);  // Esperar 500 ms (0.5 segundos)
+        usleep(500000); 
     }
 
     cout << "Programa terminado." << endl;
