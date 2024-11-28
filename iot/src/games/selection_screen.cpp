@@ -48,6 +48,8 @@ bool selection_screen(sf::RenderWindow& window, int& game_selection, sf::Rectang
 
         if(!paused){
 
+	    gpioWrite(PIN_LED_END, 0);
+
             if(game_selection != -1) {
                 if(!frames_sice_selection){
                     int number_of_frames[3] = {5,7,24};
@@ -58,7 +60,13 @@ bool selection_screen(sf::RenderWindow& window, int& game_selection, sf::Rectang
                 if(frames_sice_selection > 100) fade_oppacity += 8;
                 if(fade_oppacity > 255) fade_oppacity = 255;
 
-                if(frames_sice_selection > 130) return 1;
+		gpioWrite(PIN_BUZZER, 1);
+
+                if(frames_sice_selection > 130) {
+		    gpioWrite(PIN_LED_START, 1);
+                    gpioWrite(PIN_BUZZER, 0);
+		    return 1;
+		}
             }
 
             fade.setSize(sf::Vector2f(resized_window_width, resized_window_height));

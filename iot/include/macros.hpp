@@ -11,6 +11,10 @@
 #define PIN_BUTTON_3 22
 #define PIN_BUTTON_4 18
 
+#define PIN_BUZZER 23
+#define PIN_LED_START 24
+#define PIN_LED_END 25
+
 #define INITIALIZE_GAME_OBJECTS()   \
     sf::Text game_over;\
     game_over.setFont(font);\

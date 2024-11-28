@@ -127,6 +127,12 @@ int main(){
     }
 
     gpioSetMode(PIN_BUTTON_1, PI_INPUT);
+    gpioSetMode(PIN_BUTTON_2, PI_INPUT);
+    gpioSetMode(PIN_BUTTON_3, PI_INPUT);
+    gpioSetMode(PIN_BUTTON_4, PI_INPUT);
+    gpioSetMode(PIN_BUZZER, PI_OUTPUT);
+    gpioSetMode(PIN_LED_START, PI_OUTPUT);
+    gpioSetMode(PIN_LED_END, PI_OUTPUT);
 
     /////////////////////////////////////////
 
@@ -169,6 +175,8 @@ int main(){
     mosquitto_loop_stop(mosq, true);
     mosquitto_destroy(mosq);
     mosquitto_lib_cleanup();
+
+    gpioTerminate();
 
     std::cout << "good_bye" << "\n";
 

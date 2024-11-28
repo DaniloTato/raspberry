@@ -41,6 +41,8 @@ bool end_game_screen(sf::RenderWindow& window){
         //////////////// game logic start
 
         if(!paused){
+            gpioWrite(PIN_LED_END,1);
+	    gpioWrite(PIN_LED_START,0);
 
             window.clear(sf::Color::White);
 
@@ -53,7 +55,10 @@ bool end_game_screen(sf::RenderWindow& window){
                 j++;
             }
 
-            if(frames > duration * 60) return 1;
+            if(frames > duration * 60){
+		gpioWrite(PIN_LED_END,0);
+		return 1;
+	    }
 
             window.display();
         }
