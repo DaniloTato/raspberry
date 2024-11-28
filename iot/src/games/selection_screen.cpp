@@ -46,10 +46,10 @@ bool selection_screen(sf::RenderWindow& window, int& game_selection, sf::Rectang
             if (event.key.code == sf::Keyboard::Num2){
                 game_selection = 1;
             }
-            // if (event.key.code == sf::Keyboard::Num3){
-            //     game_selection = 2;
-            // }
-    }
+            if (event.key.code == sf::Keyboard::Num3){
+                game_selection = 2;
+            }
+        }
 
         //////////////// game logic start
 

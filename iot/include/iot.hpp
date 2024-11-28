@@ -44,6 +44,11 @@ extern bool paused;
 extern int patient_id;
 extern int specialist_id;
 
+extern bool button1;
+extern bool button2;
+extern bool button3;
+extern bool button4;
+
 class fps_counter;
 
 extern fps_counter fpsc;
@@ -217,6 +222,25 @@ private:
     float _radius = 1;
     sf::CircleShape _circle;
     bool _on = 0;
+};
+
+class input_manager{
+public:
+    void assign_button(std::string identifier, bool* control_variable){
+        inputs[identifier] = std::make_pair(control_variable, false);
+    }
+
+    bool is_button_pressed(std::string button){
+        bool res = false;
+        if(inputs.find(button) == inputs.end()){
+            res = *(inputs[button].first) == true && *(inputs[button].first) != inputs[button].second;
+        }
+        inputs[button].second = *(inputs[button].first);
+        return res;
+    }
+
+private:
+    std::unordered_map<std::string, std::pair<bool*, bool>> inputs;
 };
 
 #endif
