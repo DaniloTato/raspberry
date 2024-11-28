@@ -6,17 +6,37 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Registrar Nuevo Usuario</h1>
-    <form method="post" action="registrar_usuario.php">
-        <div class="username">
-            <input type="text" name="name" required>
-            <label>Nombre de Usuario</label>
-        </div>
-        <div class="password">
-            <input type="password" name="password" required>
-            <label>Contraseña</label>
-        </div>
-        <input type="submit" value="Registrar" class="btn">
-    </form>
+    <div class="formulario">
+        <h1>Registrar Nuevo Usuario</h1>
+        <form id="registroForm">
+            <div class="username">
+                <input type="text" id="newUsername" required>
+                <label>Nombre de Usuario</label>
+            </div>
+            <div class="password">
+                <input type="password" id="newPassword" required>
+                <label>Contraseña</label>
+            </div>
+            <input type="submit" value="Registrar" class="btn">
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registroForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('newUsername').value;
+            const contraseña = document.getElementById('newPassword').value;
+
+            const response = await fetch('http://localhost:5000/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: nombre, password: contraseña })
+});
+
+
+            const result = await response.json();
+            alert(result.message);
+        });
+    </script>
 </body>
 </html>
