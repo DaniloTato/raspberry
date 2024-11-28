@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="UTF-8"/>
     <title>Resultados</title>
     <link rel="stylesheet" href="estilos.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -32,7 +32,6 @@
             </ul>
         </nav>
         
-        <div class="clearfix"></div>
         <section id="Content">
             <!-- Gráficas -->
             <article class="article" id="graficas">
@@ -136,7 +135,10 @@
                 return;
             }
 
-            fetch(`http://192.168.1.79:5000/scores?paciente=${pacienteId}&juego=${juegoId}`)
+            // URL de la API
+            const url = `http://192.168.1.79:5000/all_data`;
+
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -144,7 +146,13 @@
                         return;
                     }
 
-                    // Actualizar datos de la gráfica
+                    // Verificar si los datos no están vacíos
+                    if (data.length === 0) {
+                        alert('No se encontraron resultados para los filtros dados.');
+                        return;
+                    }
+
+                    // Actualizar los datos de la gráfica
                     const fechas = data.map(d => d.Fecha_Juego);
                     const puntuaciones = data.map(d => d.Puntuacion_Resultado);
 
@@ -159,7 +167,9 @@
         }
 
         // Inicializar la gráfica
-        document.addEventListener('DOMContentLoaded', setupChart);
+        document.addEventListener('DOMContentLoaded', function () {
+            setupChart(); // Inicializa la gráfica
+        });
     </script>
 </body>
 </html>
