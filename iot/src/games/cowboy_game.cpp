@@ -66,7 +66,7 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
 
         duration++;
 
-        button1 = sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
+        button1 = gpioRead(PIN_BUTTON_1);
 
         while (window.pollEvent(event))
         {

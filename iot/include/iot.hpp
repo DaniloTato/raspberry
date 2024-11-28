@@ -13,6 +13,7 @@
 #include <ctime>
 #include <sstream>
 #include <stdexcept>
+#include <cmath>
 
 #include <mysql_driver.h>
 #include <mysql_connection.h>
@@ -23,6 +24,7 @@
 #include <cppconn/datatype.h>
 
 #include <mosquitto.h>
+#include <pigpio.h>
 
 
 extern int SCREEN_WIDTH;

@@ -132,10 +132,10 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
 
         duration++;
 
-        button1 = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-        button2 = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
-        button3 = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-        button4 = sf::Keyboard::isKeyPressed(sf::Keyboard::F);
+        button1 = gpioRead(PIN_BUTTON_1);
+        button2 = gpioRead(PIN_BUTTON_2);
+        button3 = gpioRead(PIN_BUTTON_3);
+        button4 = gpioRead(PIN_BUTTON_4);
 
         while (window.pollEvent(event))
         {
@@ -226,7 +226,7 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
             for(int i = 0; i < icons.size(); i++){
                 if(i == selection){
                     if(!find_in_vector(pinned, selection)){
-                        icons[i] -> _size = 1 + abs(cos(frames*0.05)*0.2);
+                        icons[i] -> _size = 1 + std::fabs(cosf(static_cast<float>(frames)*0.05)*0.2);
                     } else icons[i] -> _size = 1;
                 } else icons[i] -> _size = 1;
 

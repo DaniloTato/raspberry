@@ -78,7 +78,7 @@ int main(){
     //mysql connection
 
         sql::mysql::MySQL_Driver* driver = sql::mysql::get_mysql_driver_instance();
-        sql::Connection* conn = driver->connect("tcp://127.0.0.1:3306", "root", "");
+        sql::Connection* conn = driver->connect("tcp://127.0.0.1:3306", "root", "Noentiendo20051!");
         conn->setSchema("neurobox");
 
     //end to musql connection
@@ -114,10 +114,24 @@ int main(){
         std::cout << "Mosquitto is successfully listening to topic : " << TOPIC << std::endl;
 
         mosquitto_loop_start(mosq);
-        
+
     //mqtt connection
 
     //-----------------------------------------------------------------------------------
+
+    //pigpio//connection///////////////////////
+
+    if(gpioInitialise() < 0){
+        std::cerr << "failed gpio\n";
+	return -1;
+    }
+
+    gpioSetMode(PIN_BUTTON_1, PI_INPUT);
+
+    /////////////////////////////////////////
+
+    //--------------------------------------------------------------------
+
 
     //load arial font
     if (!font.loadFromFile("8-BIT WONDER.TTF")) {

@@ -6,6 +6,11 @@
 #define CLIENT_ID "neurobox_client"
 #define TOPIC "test/topic"
 
+#define PIN_BUTTON_1 17
+#define PIN_BUTTON_2 27
+#define PIN_BUTTON_3 22
+#define PIN_BUTTON_4 18
+
 #define INITIALIZE_GAME_OBJECTS()   \
     sf::Text game_over;\
     game_over.setFont(font);\
