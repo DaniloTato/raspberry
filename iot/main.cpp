@@ -122,6 +122,7 @@ int main(){
 
     functions[0] = cowboy_game;
     functions[1] = lottery_game;
+    functions[2] = colors_game;
 
     ///////sfml window stuff////////////
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "NEUROBOX");
