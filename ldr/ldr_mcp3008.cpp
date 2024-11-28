@@ -1,7 +1,7 @@
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 #include <iostream>
-#include <csignal>  /
+#include <csignal>  
 #include <unistd.h>  
 
 using namespace std;
