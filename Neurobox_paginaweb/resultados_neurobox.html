@@ -1,93 +1,165 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <title> Resultados</title>
-        <link rel="stylesheet" href="estilos.css" />
-    </head>
-    <body>
-        <div id = "Container">
-
-            <header>
+<head>
+    <meta charset="utf-8"/>
+    <title>Resultados</title>
+    <link rel="stylesheet" href="estilos.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #filters {
+            margin-bottom: 20px;
+        }
+        #filters input {
+            margin-right: 10px;
+        }
+        #chart-container {
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="Container">
+        <header>
             <h1>Resultados</h1>
-            </header>
+        </header>
 
+        <nav>
+            <ul>
+                <li><a href="Html_neurobox.html">Inicio</a></li>
+                <li><a href="#graficas">Gráficas</a></li>
+                <li><a href="#Basededatosfea">Base de datos</a></li>
+            </ul>
+        </nav>
+        
+        <div class="clearfix"></div>
+        <section id="Content">
+            <!-- Gráficas -->
+            <article class="article" id="graficas">
+                <h2>Gráficas</h2>
+                <div id="filters">
+                    <label for="filter-paciente">ID Paciente:</label>
+                    <input id="filter-paciente" type="text" placeholder="Ej: 1" />
+                    
+                    <label for="filter-juego">ID Juego:</label>
+                    <input id="filter-juego" type="text" placeholder="Ej: 4" />
+                    
+                    <button onclick="updateChart()">Actualizar Gráfica</button>
+                </div>
+                <div id="chart-container">
+                    <canvas id="scoreChart"></canvas>
+                </div>
+            </article>
+
+            <!-- Base de datos -->
+            <article class="article" id="Basededatosfea">
+                <h2>Base de datos</h2>
+                <table border="1">
+                    <tr>
+                        <th>Cosas 1</th>
+                        <th>Cosas 2</th>
+                        <th>Cosas 3</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </article>
+        </section>
+
+        <footer>
             <nav>
                 <ul>
-                    <li>
-                        <a href="Html_neurobox.html">
-                            Inicio
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#graficas">
-                            Graficas
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#Basededatosfea">
-                            Base de datos
-                        </a>
-                    </li>
+                    <li><a href="contactos.html">Contactos</a></li>
                 </ul>
-
             </nav>
-            <div class="clearfix"></div>
-            <section id = "Content">
+        </footer>
+    </div>
 
+    <script>
+        let chart;
 
-                <article class="article" id="graficas">
-                    <h2>Graficas</h2>
-                    <p>Texto de informacion</p>
-                </article>
-                <article class="article" id="Basededatosfea">
-                    <h2>Base de datos asi bonita</h2>
-                    <p>Texto del articulo</p>
-                    <table border="1">
-                        <tr>
-                            <th>Cosas 1</th>
-                            <th>Cosas 2</th>
-                            <th>Cosas 3</th>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                </article>
-            </section>
+        // Configurar la gráfica
+        function setupChart() {
+            const ctx = document.getElementById('scoreChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [], // Fechas
+                    datasets: [{
+                        label: 'Puntuación',
+                        data: [], // Puntuaciones
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha del Juego'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Puntuación'
+                            }
+                        }
+                    }
+                }
+            });
+        }
 
+        // Actualizar la gráfica con los filtros
+        function updateChart() {
+            const pacienteId = document.getElementById('filter-paciente').value.trim();
+            const juegoId = document.getElementById('filter-juego').value.trim();
 
+            if (!pacienteId || !juegoId) {
+                alert('Por favor, ingresa el ID del paciente y del juego.');
+                return;
+            }
 
+            fetch(`http://192.168.1.79:5000/scores?paciente=${pacienteId}&juego=${juegoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
 
-            <body>
-                <div id="Container">                    
-                    <footer>
-                        <nav>
-                            <ul>
-                                <li><a href="contactos.html">Contactos</a></li>
-                            </ul>
-                        </nav>
-                    </footer>
-                </div>
-            </body>
-            
+                    // Actualizar datos de la gráfica
+                    const fechas = data.map(d => d.Fecha_Juego);
+                    const puntuaciones = data.map(d => d.Puntuacion_Resultado);
 
+                    chart.data.labels = fechas;
+                    chart.data.datasets[0].data = puntuaciones;
+                    chart.update();
+                })
+                .catch(error => {
+                    console.error('Error al cargar los datos:', error);
+                    alert('Hubo un error al cargar los datos.');
+                });
+        }
 
-        </div>
-    </body>
-
-
-
+        // Inicializar la gráfica
+        document.addEventListener('DOMContentLoaded', setupChart);
+    </script>
+</body>
 </html>
