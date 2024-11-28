@@ -3,28 +3,28 @@ from flask_cors import CORS
 import pymysql
 
 app = Flask(__name__)
-CORS(app)  # Permitir solicitudes desde cualquier origen
+CORS(app, resources={r"/*": {"origins": "*"}})
+
 
 def connect_db():
     return pymysql.connect(
-        host="localhost", 
-        user="webuser", 
-        password="", 
-        database="neurobox"
+        host="localhost",
+        user="webuser",
+        password="",
+        database="neurobox_v3"  # Cambiado a neurobox_v3
     )
+
 
 @app.route('/data', methods=['GET'])
 def get_data():
+    conn = None  # Inicializa la conexión como None
     try:
-        #get filtros
         id_juego = request.args.get('id_juego')
         tipo = request.args.get('tipo')
 
-        #conexion
-        conn = connect_db()
+        conn = connect_db()  # Intenta conectarte a la base de datos
         cursor = conn.cursor()
 
-        # query con los filtros
         query = "SELECT * FROM resultados WHERE 1=1"
         params = []
 
@@ -47,15 +47,15 @@ def get_data():
         return jsonify(data)
 
     except pymysql.MySQLError as e:
-        print(f"Database error: {e}")
-        return jsonify({"error": "Database query failed"}), 500
+        return jsonify({"error": f"Database error: {e}"}), 500
 
     except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"error": "Internal server error"}), 500
+        return jsonify({"error": f"Error: {e}"}), 500
 
     finally:
-        conn.close()
+        if conn:  # Solo cierra la conexión si fue creada
+            conn.close()
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
