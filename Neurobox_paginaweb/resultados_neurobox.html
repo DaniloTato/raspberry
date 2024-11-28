@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Resultados</title>
+    <title>Base de datos</title>
     <link rel="stylesheet" href="estilos.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -53,30 +53,86 @@
 
             <!-- Base de datos -->
             <article class="article" id="Basededatosfea">
-                <h2>Base de datos</h2>
-                <table border="1">
-                    <tr>
-                        <th>Cosas 1</th>
-                        <th>Cosas 2</th>
-                        <th>Cosas 3</th>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </table>
+                <h2>Base de datos combinada</h2>
+                <div id="filtros-container">
+                    <label for="filter-id-juego">ID Juego:</label>
+                    <input id="filter-id-juego" type="text" oninput="filterTable()" />
+
+                    <label for="filter-id-paciente">ID Paciente:</label>
+                    <input id="filter-id-paciente" type="text" oninput="filterTable()" />
+
+                    <label for="filter-id-especialista">ID Especialista:</label>
+                    <input id="filter-id-especialista" type="text" oninput="filterTable()" />
+
+                    <label for="filter-id-resultado">ID Resultado:</label>
+                    <input id="filter-id-resultado" type="text" oninput="filterTable()" />
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Paciente</th>
+                                <th>Nombre del Paciente</th>
+                                <th>Edad del Paciente</th>
+                                <th>Nombre del Tutor</th>
+                                <th>Edad del Tutor</th>
+                                <th>Correo del Tutor</th>
+                                <th>ID Especialista</th>
+                                <th>Nombre del Especialista</th>
+                                <th>Correo del Especialista</th>
+                                <th>ID Juego</th>
+                                <th>Nombre del Juego</th>
+                                <th>Propósito del Juego</th>
+                                <th>Duración del Juego</th>
+                                <th>Fecha del Juego</th>
+                                <th>ID Resultado</th>
+                                <th>Puntuación</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Datos dinámicos -->
+                        </tbody>
+                    </table>
+                </div>
             </article>
+        </section>
+
+        <aside>
+            <h3>Filtros rápidos</h3>
+            <form>
+                <input type="text" placeholder="Filtrar por ID Paciente" id="quick-filter-paciente">
+                <input type="text" placeholder="Filtrar por Nombre del Juego" id="quick-filter-juego">
+                <input type="submit" value="Aplicar filtros">
+            </form>
+        </aside>
+    </div>
+
+
+</div>
+
+<script>
+    // Filtrar tabla basado en inputs
+    function filterTable() {
+        const idJuego = document.getElementById('filter-id-juego').value.toLowerCase();
+        const idPaciente = document.getElementById('filter-id-paciente').value.toLowerCase();
+        const idEspecialista = document.getElementById('filter-id-especialista').value.toLowerCase();
+        const idResultado = document.getElementById('filter-id-resultado').value.toLowerCase();
+
+        const table = document.querySelector("table tbody");
+        const rows = table.querySelectorAll("tr");
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll("td");
+            const matchJuego = cells[9]?.textContent.toLowerCase().includes(idJuego);
+            const matchPaciente = cells[0]?.textContent.toLowerCase().includes(idPaciente);
+            const matchEspecialista = cells[6]?.textContent.toLowerCase().includes(idEspecialista);
+            const matchResultado = cells[14]?.textContent.toLowerCase().includes(idResultado);
+
+            row.style.display = matchJuego && matchPaciente && matchEspecialista && matchResultado ? "" : "none";
+        });
+    }
+</script>
         </section>
 
         <footer>
