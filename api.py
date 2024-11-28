@@ -12,7 +12,7 @@ def connect_db():
         host="localhost", 
         user="webuser", 
         password="", 
-        database="neurobox_v4"
+        database="neurobox"
     )
 
 # Ruta para obtener todos los datos combinados
