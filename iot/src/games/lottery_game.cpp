@@ -132,6 +132,11 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
 
         duration++;
 
+        button1 = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+        button2 = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+        button3 = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+        button4 = sf::Keyboard::isKeyPressed(sf::Keyboard::F);
+
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -158,50 +163,42 @@ bool lottery_game(sf::RenderWindow& window, sql::Connection* conn, circle_transi
                     if(selection <= -1) selection = icons.size() - 1;
                     frames = 0;
                 }
-
-                if (event.key.code == sf::Keyboard::A){
-
-                    if(clicky_column == 0) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id, errores, duration);
-                    else gear2.animate(7, 0, 3, 1);
-                    clicky_column = 0;
-                    selection = update_selection(clicky_row, clicky_column);
-
-                } else if (event.key.code == sf::Keyboard::S){
-
-                    if(clicky_column == 1) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id, errores, duration);
-                    else gear2.animate(7, 0, 3, (clicky_column > 1));
-                    clicky_column = 1;
-                    selection = update_selection(clicky_row, clicky_column);
-
-                } else if (event.key.code == sf::Keyboard::D){
-
-                    if(clicky_column == 2) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id, errores, duration);
-                    else gear2.animate(7, 0, 3, 0);
-                    clicky_column = 2;
-                    selection = update_selection(clicky_row, clicky_column);
-
-                } if (event.key.code == sf::Keyboard::F){
-
-                    clicky_row++;
-                    if(clicky_row > 3) clicky_row = 0, gear.animate(7, 0, 3, 1);
-                    else gear.animate(7, 0, 3);
-                    selection = update_selection(clicky_row, clicky_column);
-
-                }
             }
-
-            // if(event.type == sf::Event::Resized){
-            //     sf::FloatRect view(0, 0, event.size.width, event.size.height);
-            //     window.setView(sf::View(view));
-            //     resized_window_width = event.size.width;
-            //     resized_window_height = event.size.height;
-            // }
         }
 
         if (fade.getFillColor().a > 0) fade.setFillColor(sf::Color(0,0,0, fade.getFillColor().a - 8));
 
         //////////////// game logic start
         if(!paused){
+
+
+            if (input_m.is_button_pressed("b1")){
+                if(clicky_column == 0) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id, errores, duration);
+                else gear2.animate(7, 0, 3, 1);
+                clicky_column = 0;
+                selection = update_selection(clicky_row, clicky_column);
+
+            } else if (input_m.is_button_pressed("b2")){
+                if(clicky_column == 1) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id, errores, duration);
+                else gear2.animate(7, 0, 3, (clicky_column > 1));
+                clicky_column = 1;
+                selection = update_selection(clicky_row, clicky_column);
+
+            } else if (input_m.is_button_pressed("b3")){
+                if(clicky_column == 2) check_icon(pinned, selected_icons, selection, cards, icons, coins, scrolling_texts, reaction_time, SCORE_TIME_TOLERANCE, score, clicky, conn, game_id, errores, duration);
+                else gear2.animate(7, 0, 3, 0);
+                clicky_column = 2;
+                selection = update_selection(clicky_row, clicky_column);
+
+            } if (input_m.is_button_pressed("b4")){
+                clicky_row++;
+                if(clicky_row > 3) clicky_row = 0, gear.animate(7, 0, 3, 1);
+                else gear.animate(7, 0, 3);
+                selection = update_selection(clicky_row, clicky_column);
+            }
+
+
+
 
             frames++;
             reaction_time++;

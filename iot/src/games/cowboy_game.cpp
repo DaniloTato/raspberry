@@ -66,6 +66,8 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
 
         duration++;
 
+        button1 = sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
+
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -81,61 +83,7 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
                     delete_ptr_vector(scrolling_text_vector);
                     return 1;
                 }
-
-                if(!paused){
-
-                    if (event.key.code == sf::Keyboard::Z && !game_state){
-
-                        if(time_until_fire < 1){
-                            player._state = "won";
-                            enemy._state = "lost";
-                            game_state = 1;
-                            show_fuego = 0;
-                            flash_vector.push_back(new flash_effect);
-                            scrolling_text_vector.push_back(new scrolling_text(1600, 67, "textures/yee.png", 13));
-                            double reaction = -time_until_fire/56.0f;
-                            reaction_times.push_back(reaction);
-
-                            // mysqlx::Table testingTable = db.getTable("testing");
-                            // testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
-                            // .values(get_date(), reaction, "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción")
-                            // .execute();
-
-                            //mySQL action
-                                insert_into_results(conn, reaction, game_id, "tiempo de reacción");
-                            //mySQL action end
-
-                        }else{
-                            //disqualified
-                            show_fuego = 0;
-                            player._state = "lost";
-                            enemy._state = "idle";
-                            game_state = 3; //locked_gamestate_for_game_over;
-                            frames_passed = 0;
-
-                            // if(reaction_times.size()){
-                            //     mysqlx::Table testingTable = db.getTable("testing");
-                            //     testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
-                            //     .values(get_date(), avg(reaction_times), "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción_promedio_de_la_partida")
-                            //     .execute();
-                            // }
-
-                            //mySQL action
-                                if(reaction_times.size()) insert_into_results(conn, avg(reaction_times), game_id, "tiempo de reacción promedio");
-                                insert_game_duration(conn, duration/57, game_id);
-                            //mySQL action end
-                        }
-                        
-                    }
-                }
             }
-
-            // if(event.type == sf::Event::Resized){
-            //     sf::FloatRect view(0, 0, event.size.width, event.size.height);
-            //     window.setView(sf::View(view));
-            //     resized_window_width = event.size.width;
-            //     resized_window_height = event.size.height;
-            // }
         }
 
         if (fade.getFillColor().a > 0) fade.setFillColor(sf::Color(0,0,0, fade.getFillColor().a - 8));
@@ -143,6 +91,48 @@ bool cowboy_game(sf::RenderWindow& window, sql::Connection* conn, circle_transit
         //////////////// game logic start
 
         if(!paused){
+            if (input_m.is_button_pressed("b1") && !game_state){
+
+                if(time_until_fire < 1){
+                    player._state = "won";
+                    enemy._state = "lost";
+                    game_state = 1;
+                    show_fuego = 0;
+                    flash_vector.push_back(new flash_effect);
+                    scrolling_text_vector.push_back(new scrolling_text(1600, 67, "textures/yee.png", 13));
+                    double reaction = -time_until_fire/56.0f;
+                    reaction_times.push_back(reaction);
+
+                    // mysqlx::Table testingTable = db.getTable("testing");
+                    // testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
+                    // .values(get_date(), reaction, "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción")
+                    // .execute();
+
+                    //mySQL action
+                        insert_into_results(conn, reaction, game_id, "tiempo de reacción");
+                    //mySQL action end
+
+                }else{
+                    //disqualified
+                    show_fuego = 0;
+                    player._state = "lost";
+                    enemy._state = "idle";
+                    game_state = 3; //locked_gamestate_for_game_over;
+                    frames_passed = 0;
+
+                    // if(reaction_times.size()){
+                    //     mysqlx::Table testingTable = db.getTable("testing");
+                    //     testingTable.insert("fecha", "puntaje", "juego", "nivel", "tipo")
+                    //     .values(get_date(), avg(reaction_times), "viejo_oeste",  MAX_DIFFICULTY - difficulty, "tiempo_de_reacción_promedio_de_la_partida")
+                    //     .execute();
+                    // }
+
+                    //mySQL action
+                        if(reaction_times.size()) insert_into_results(conn, avg(reaction_times), game_id, "tiempo de reacción promedio");
+                        insert_game_duration(conn, duration/57, game_id);
+                    //mySQL action end
+                }
+            }
 
             frames_passed++;
 

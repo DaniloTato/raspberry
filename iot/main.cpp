@@ -45,11 +45,18 @@ sf::Font font;
 //object to show frames per second of the project
 fps_counter fpsc(10,10,font, &sfclock);
 
+input_manager input_m;
+
 std::unordered_map<std::string, sf::Color> color_palette{
     {"purple", sf::Color(104,56,108)},
     {"black", sf::Color(24,20,37)},
     {"blue", sf::Color(44,232,245)},
 };
+
+bool button1 = false;
+bool button2 = false;
+bool button3 = false;
+bool button4 = false;
 
 //Mosquitto get message
 void message_callback(struct mosquitto *mosq, void *userdata, const struct mosquitto_message *message) {
@@ -122,6 +129,7 @@ int main(){
 
     functions[0] = cowboy_game;
     functions[1] = lottery_game;
+    //functions[2] = color_game;
 
     ///////sfml window stuff////////////
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "NEUROBOX");
@@ -129,6 +137,11 @@ int main(){
 
     circle_transition transition;
     sf::RectangleShape fade;
+
+    input_m.assign_button("b1", &button1);
+    input_m.assign_button("b2", &button2);
+    input_m.assign_button("b3", &button3);
+    input_m.assign_button("b4", &button4);
 
     while(true){
         if(!selection_screen(window, game_selection, fade)) break;
