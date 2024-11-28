@@ -36,13 +36,6 @@ bool end_game_screen(sf::RenderWindow& window){
                 }
 
             }
-
-            // if(event.type == sf::Event::Resized){
-            //     sf::FloatRect view(0, 0, event.size.width, event.size.height);
-            //     window.setView(sf::View(view));
-            //     resized_window_width = event.size.width;
-            //     resized_window_height = event.size.height;
-            // }
         }
 
         //////////////// game logic start

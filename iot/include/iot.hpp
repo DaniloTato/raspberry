@@ -232,7 +232,7 @@ public:
 
     bool is_button_pressed(std::string button){
         bool res = false;
-        if(inputs.find(button) == inputs.end()){
+        if(inputs.find(button) != inputs.end()){
             res = *(inputs[button].first) == true && *(inputs[button].first) != inputs[button].second;
         }
         inputs[button].second = *(inputs[button].first);
@@ -242,5 +242,7 @@ public:
 private:
     std::unordered_map<std::string, std::pair<bool*, bool>> inputs;
 };
+
+extern input_manager input_m;
 
 #endif

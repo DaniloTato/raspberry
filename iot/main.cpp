@@ -45,6 +45,8 @@ sf::Font font;
 //object to show frames per second of the project
 fps_counter fpsc(10,10,font, &sfclock);
 
+input_manager input_m;
+
 std::unordered_map<std::string, sf::Color> color_palette{
     {"purple", sf::Color(104,56,108)},
     {"black", sf::Color(24,20,37)},
@@ -136,7 +138,6 @@ int main(){
     circle_transition transition;
     sf::RectangleShape fade;
 
-    input_manager input_m;
     input_m.assign_button("b1", &button1);
     input_m.assign_button("b2", &button2);
     input_m.assign_button("b3", &button3);
