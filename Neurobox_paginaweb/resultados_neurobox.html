@@ -192,7 +192,7 @@
                 return;
             }
 
-            fetch(`http://192.168.1.79:5000/scores?paciente=${pacienteId}&juego=${juegoId}`)
+            fetch(`http://10.43.60.98:5000/scores?paciente=${pacienteId}&juego=${juegoId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
