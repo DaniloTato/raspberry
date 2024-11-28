@@ -55,6 +55,8 @@
                     <li><a href="#informacion">Información</a></li>
                     <li><a href="#Basededatosfea">Base de datos</a></li>
                     <li><a href="resultados_neurobox.html">Resultados</a></li>
+                    <button onclick="sendGreenOn()">Send green_on</button>
+                    <button onclick="sendGreenOff()">Send green_off</button>
                 </ul>
             </nav>
 
@@ -131,7 +133,7 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                const apiUrl = "http://10.43.60.98:5000/all_data"; // Endpoint actualizado
+                const apiUrl = "http://10.43.39.254:5000/all_data"; // Endpoint actualizado
                 const tableBody = document.querySelector("#Basededatosfea table tbody");
 
                 // Cargar datos combinados
@@ -212,7 +214,7 @@
                 window.filterTable = filterTable;
 
                 // Configuración MQTT
-                const client = new Paho.MQTT.Client("broker.hivemq.com", 8000, "clientId-" + Math.random());
+                const client = new Paho.MQTT.Client("test.mosquitto.org", 8080, "clientId-" + Math.random());
 
                 client.onConnectionLost = (responseObject) => {
                     if (responseObject.errorCode !== 0) {
@@ -232,6 +234,20 @@
                     onFailure: (error) => {
                         console.log("Error de conexión:", error.errorMessage);
                     }
+
+                            window.sendGreenOn = function() {
+                            const message = new Paho.MQTT.Message("green_on");
+                            message.destinationName = "test/topic";
+                            client.send(message);
+                            console.log("Message Sent: green_on");
+                        };
+            
+                        window.sendGreenOff = function() {
+                            const message = new Paho.MQTT.Message("green_off");
+                            message.destinationName = "test/topic";
+                            client.send(message);
+                            console.log("Message Sent: green_off");
+                        };
                 });
             });
         </script>
