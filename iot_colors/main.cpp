@@ -13,6 +13,7 @@
 #include "src/games/lottery_game.cpp"
 #include "src/games/end_game_screen.cpp"
 #include "src/games/selection_screen.cpp"
+#include "src/games/color_game.cpp"
 #include "src/lottery_src/card.cpp"
 #include "src/drawable_with_physics.cpp"
 #include "src/lottery_src/coin.cpp"
@@ -135,6 +136,7 @@ int main(){
     gpioSetMode(PIN_BUZZER, PI_OUTPUT);
     gpioSetMode(PIN_LED_START, PI_OUTPUT);
     gpioSetMode(PIN_LED_END, PI_OUTPUT);
+    gpioWrite(PIN_BUZZER, 0);
 
     /////////////////////////////////////////
 

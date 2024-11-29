@@ -5,13 +5,12 @@
 #include <ctime>
 #include <iostream>
 
-int color_game(sf::RenderWindow& window, sql::Connection* conn, circle_transition& transition, sf::RectangleShape& fade) {
+bool color_game(sf::RenderWindow& window, sql::Connection* conn, circle_transition& transition, sf::RectangleShape& fade) {
 
     // Colores disponibles
     sf::Color colors[] = {sf::Color::Green, sf::Color::Red, sf::Color::Blue, sf::Color::Yellow};
 
     sf::Event event;
-    duration++;
     button1 = gpioRead(PIN_BUTTON_1);
 
     // Variables de estado
@@ -29,8 +28,9 @@ int color_game(sf::RenderWindow& window, sql::Connection* conn, circle_transitio
 
     // Bucle principal del juego
     while (window.isOpen()) {
-        sf::Event event;
-        
+        frames++;
+	sf::Event event;
+
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -71,7 +71,7 @@ int color_game(sf::RenderWindow& window, sql::Connection* conn, circle_transitio
             } else if (button1 || button2 || button3 || button4) { // Respuesta incorrecta
                 transition.start_transition();
                 insert_into_results(conn, score, game_id, "aciertos");
-                insert_game_duration(conn, frames/57.0f, id_juego);
+                insert_game_duration(conn, frames/57.0f, game_id);
                 std::cout << "Respuesta incorrecta. Puntuación final: " << score << "\n";
                 clock.restart();
             }
