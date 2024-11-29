@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    
     <meta charset="utf-8"/>
     <title>Resultados</title>
     <link rel="stylesheet" href="estilos.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Tus estilos CSS aquí */
-    </style>
+
 </head>
 <body>
     <div id="Container">
@@ -49,13 +48,6 @@
             </article>
         </section>
 
-        <footer>
-            <nav>
-                <ul>
-                    <li><a href="contactos.html">Contactos</a></li>
-                </ul>
-            </nav>
-        </footer>
     </div>
 
     <script>
@@ -106,7 +98,7 @@
                 return;
             }
 
-            fetch(`http://192.168.1.85:5000/filtered_data?id_paciente=${pacienteId}&id_juego=${juegoId}`)
+            fetch(`http://192.168.86.227:5000/filtered_data?id_paciente=${pacienteId}&id_juego=${juegoId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {

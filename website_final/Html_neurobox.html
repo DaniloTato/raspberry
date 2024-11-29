@@ -62,11 +62,6 @@
 
             <section id="Content">
                 <article class="article2">
-<<<<<<< HEAD
-                    <h2>Página Web</h2>
-=======
-
->>>>>>> leds
                     <img src="Sin título.png" alt="Modelo de la Neurobox" width="300" height="200">
                 </article>
                 <article class="article">
@@ -95,34 +90,27 @@
                             <label for="filter-id-resultado">ID Resultado:</label>
                             <input id="filter-id-resultado" type="text" oninput="filterTable()" />
                         </div>                        
-                    <div style="overflow: auto; max-height: 500px;">
-                        <table border="1">
-                            <thead>
-                                <tr>
-                                    <th>ID Paciente</th>
-                                    <th>Nombre del Paciente</th>
-                                    <th>Edad del Paciente</th>
-                                    <th>Nombre del Tutor</th>
-                                    <th>Edad del Tutor</th>
-                                    <th>Correo del Tutor</th>
-                                    <th>ID Especialista</th>
-                                    <th>Nombre del Especialista</th>
-                                    <th>Correo del Especialista</th>
-                                    <th>ID Juego</th>
-                                    <th>Nombre del Juego</th>
-                                    <th>Propósito del Juego</th>
-                                    <th>Duración del Juego</th>
-                                    <th>Fecha del Juego</th>
-                                    <th>ID Resultado</th>
-                                    <th>Puntuación</th>
-                                    <th>Tipo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Los datos dinámicos se cargarán aquí -->
-                            </tbody>
-                        </table>
-                    </div>
+                        <div style="overflow: auto; max-height: 500px;">
+                            <table border="1">
+                                <thead>
+                                    <tr>
+                                        <th>ID Paciente</th>
+                                        <th>Nombre del Paciente</th>
+                                        <th>ID Juego</th>
+                                        <th>Nombre del Juego</th>
+                                        <th>Propósito del Juego</th>
+                                        <th>Duración del Juego</th>
+                                        <th>Fecha del Juego</th>
+                                        <th>ID Resultado</th>
+                                        <th>Puntuación</th>
+                                        <th>Tipo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Los datos dinámicos se cargarán aquí -->
+                                </tbody>
+                            </table>
+                        </div>
                 </article>
             </section>
 
@@ -137,7 +125,7 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                const apiUrl = "http://10.43.60.98:5000/all_data"; // Endpoint actualizado
+                const apiUrl = "http://192.168.86.227:5000/all_data"; // Endpoint actualizado
                 const tableBody = document.querySelector("#Basededatosfea table tbody");
 
                 // Cargar datos combinados
@@ -159,13 +147,6 @@
                                 tableRow.innerHTML = `
                                     <td>${row.ID_Paciente || "N/A"}</td>
                                     <td>${row.Nombre_Paciente || "N/A"}</td>
-                                    <td>${row.Edad_Paciente || "N/A"}</td>
-                                    <td>${row.Nombre_Tutor || "N/A"}</td>
-                                    <td>${row.Edad_Tutor || "N/A"}</td>
-                                    <td>${row.Correo_Tutor || "N/A"}</td>
-                                    <td>${row.ID_Especialista || "N/A"}</td>
-                                    <td>${row.Nombre_Especialista || "N/A"}</td>
-                                    <td>${row.Correo_Especialista || "N/A"}</td>
                                     <td>${row.ID_Juego || "N/A"}</td>
                                     <td>${row.Nombre_Juego || "N/A"}</td>
                                     <td>${row.Proposito_Juego || "N/A"}</td>
@@ -217,30 +198,9 @@
 
                 window.filterTable = filterTable;
 
-                // Configuración MQTT
-                const client = new Paho.MQTT.Client("broker.hivemq.com", 8000, "clientId-" + Math.random());
-
-                client.onConnectionLost = (responseObject) => {
-                    if (responseObject.errorCode !== 0) {
-                        console.log("Conexión perdida:", responseObject.errorMessage);
-                    }
-                };
-
-                client.onMessageArrived = (message) => {
-                    console.log("Mensaje recibido:", message.payloadString);
-                };
-
-                client.connect({
-                    onSuccess: () => {
-                        console.log("Conectado al broker MQTT");
-                        client.subscribe("test/topic");
-                    },
-                    onFailure: (error) => {
-                        console.log("Error de conexión:", error.errorMessage);
-                    }
-                });
-
+                
             });
+
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {

@@ -15,7 +15,7 @@ def connect_db():
         host="localhost",
         user="webuser",
         password="",  # Asegúrate de que este campo sea correcto
-        database="neurobox_v4"
+        database="neurobox"
     )
 
 # Ruta para obtener todos los datos combinados con soporte de filtros

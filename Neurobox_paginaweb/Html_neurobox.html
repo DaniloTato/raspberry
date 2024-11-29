@@ -5,44 +5,13 @@
         <title>Neurobox</title>
         <link rel="stylesheet" href="estilos.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
-        <style>
-           #filtros-container {
-                max-width: 100%; /* Limita el ancho al 100% del contenedor */
-                overflow-x: auto; /* Habilita el scroll horizontal */
-                white-space: nowrap; /* Mantiene los filtros en una sola línea */
-                border: 1px solid #ccc;
-                padding: 10px;
-                margin-bottom: 10px;
-                background-color: #f9f9f9;
-            }
-            #Basededatosfea {
-                overflow: auto;
-                max-height: 500px;
-                border: 1px solid #ccc;
-            }
-
-            table {
-                border-collapse: collapse;
-                width: 100%;
-            }
-
-            th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
-
-            th {
-                position: sticky;
-                top: 0;
-                background-color: #f2f2f2;
-            }
-
-            th, td {
-                min-width: 150px;
-            }
-        </style>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
+
+    <script>
+        var ip = "192.168.86.227";
+    </script>
+
     <body>
         <div id="Container">
             <header>
@@ -52,27 +21,26 @@
             <nav>
                 <ul>
                     <li><a href="#">Inicio</a></li>
-                    <li><a href="#informacion">Información</a></li>
+                    <li><a href="#">Juegos</a></li>
                     <li><a href="#Basededatosfea">Base de datos</a></li>
-                    <li><a href="resultados_neurobox.html">Resultados</a></li>
+                    <li><a href="#graficas">Gráficas</a></li>
+                </ul>
+            </nav>
+
+            <section class="article2">
+                <img src="Sin título.png" alt="Modelo de la Neurobox" width="300" height="200">
+            </section>
+
+            <nav>
+                <ul>
+                    <h2>Mandar juego a mi NEUROBOX</h2>
+                    <button class="btn_purple" onclick="sendGreenOn()">Juego Cowboy</button>
+                    <button class="btn_red" onclick="sendGreenOff()">Juego Lotería</button>
+                    <button class="btn_green" onclick="sendGreenOff()">Juego Colores</button>
                 </ul>
             </nav>
 
             <section id="Content">
-                <article class="article2">
-                    <h2>Página Web</h2>
-                    <img src="Sin título.png" alt="Modelo de la Neurobox" width="300" height="200">
-                </article>
-                <article class="article">
-                    <h2>Objetivos</h2>
-                    <p>
-                        Nuestro objetivo es crear un dispositivo interactivo para ayudar a niños con problemas de coordinación a mejorar sus habilidades motoras finas y gruesas de una manera divertida y estimulante. Este dispositivo integrará una serie de juegos que promoverán el desarrollo de destrezas como la precisión, el equilibrio y la concentración. Utilizaremos sensores y retroalimentación visual y auditiva para captar el interés de los niños y para proporcionarles una experiencia de aprendizaje que los motive a practicar y superar retos, reforzando así su confianza y mejorando sus habilidades motrices en cada sesión.
-                    </p>
-                </article>
-                <article class="article" id="informacion">
-                    <h2>Información</h2>
-                    <p>Texto de información</p>
-                </article>
                 <article class="article" id="Basededatosfea">
                     <h2>Base de datos combinada</h2>
                     <div>
@@ -89,49 +57,54 @@
                             <label for="filter-id-resultado">ID Resultado:</label>
                             <input id="filter-id-resultado" type="text" oninput="filterTable()" />
                         </div>                        
-                    <div style="overflow: auto; max-height: 500px;">
-                        <table border="1">
-                            <thead>
-                                <tr>
-                                    <th>ID Paciente</th>
-                                    <th>Nombre del Paciente</th>
-                                    <th>Edad del Paciente</th>
-                                    <th>Nombre del Tutor</th>
-                                    <th>Edad del Tutor</th>
-                                    <th>Correo del Tutor</th>
-                                    <th>ID Especialista</th>
-                                    <th>Nombre del Especialista</th>
-                                    <th>Correo del Especialista</th>
-                                    <th>ID Juego</th>
-                                    <th>Nombre del Juego</th>
-                                    <th>Propósito del Juego</th>
-                                    <th>Duración del Juego</th>
-                                    <th>Fecha del Juego</th>
-                                    <th>ID Resultado</th>
-                                    <th>Puntuación</th>
-                                    <th>Tipo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Los datos dinámicos se cargarán aquí -->
-                            </tbody>
-                        </table>
+                        <div style="overflow: auto; max-height: 500px;">
+                            <table border="1">
+                                <thead>
+                                    <tr>
+                                        <th>ID Paciente</th>
+                                        <th>Nombre del Paciente</th>
+                                        <th>ID Juego</th>
+                                        <th>Nombre del Juego</th>
+                                        <th>Propósito del Juego</th>
+                                        <th>Duración del Juego</th>
+                                        <th>Fecha del Juego</th>
+                                        <th>ID Resultado</th>
+                                        <th>Puntuación</th>
+                                        <th>Tipo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Los datos dinámicos se cargarán aquí -->
+                                </tbody>
+                            </table>
+                        </div>
+                </article>
+            </section>
+
+            <section id="Content">
+                <!-- Gráficas -->
+                <article class="article" id="graficas">
+                    <h2>Gráficas</h2>
+                    <div id="filters">
+                        <label for="filter-paciente">ID Paciente:</label>
+                        <input id="filter-paciente" type="text" placeholder="Ej: 1" />
+                        
+                        <label for="filter-juego">ID Juego:</label>
+                        <input id="filter-juego" type="text" placeholder="Ej: 4" />
+                        
+                        <button onclick="updateChart()">Actualizar Gráfica</button>
+                    </div>
+                    <div id="chart-container">
+                        <canvas id="scoreChart"></canvas>
                     </div>
                 </article>
             </section>
 
-            <footer>
-                <nav>
-                    <ul>
-                        <li><a href="contactos.html">Contactos</a></li>
-                    </ul>
-                </nav>
-            </footer>
         </div>
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                const apiUrl = "http://192.168.1.85:5000/all_data"; // Endpoint actualizado
+                const apiUrl = `http://${ip}:5000/all_data`; // Endpoint actualizado
                 const tableBody = document.querySelector("#Basededatosfea table tbody");
 
                 // Cargar datos combinados
@@ -153,13 +126,6 @@
                                 tableRow.innerHTML = `
                                     <td>${row.ID_Paciente || "N/A"}</td>
                                     <td>${row.Nombre_Paciente || "N/A"}</td>
-                                    <td>${row.Edad_Paciente || "N/A"}</td>
-                                    <td>${row.Nombre_Tutor || "N/A"}</td>
-                                    <td>${row.Edad_Tutor || "N/A"}</td>
-                                    <td>${row.Correo_Tutor || "N/A"}</td>
-                                    <td>${row.ID_Especialista || "N/A"}</td>
-                                    <td>${row.Nombre_Especialista || "N/A"}</td>
-                                    <td>${row.Correo_Especialista || "N/A"}</td>
                                     <td>${row.ID_Juego || "N/A"}</td>
                                     <td>${row.Nombre_Juego || "N/A"}</td>
                                     <td>${row.Proposito_Juego || "N/A"}</td>
@@ -211,29 +177,122 @@
 
                 window.filterTable = filterTable;
 
-                // Configuración MQTT
-                const client = new Paho.MQTT.Client("broker.hivemq.com", 8000, "clientId-" + Math.random());
+                
+            });
+
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const client = new Paho.MQTT.Client("test.mosquitto.org", 8080, "clientId-" + Math.random());
 
                 client.onConnectionLost = (responseObject) => {
                     if (responseObject.errorCode !== 0) {
-                        console.log("Conexión perdida:", responseObject.errorMessage);
+                        console.log("Connection Lost:", responseObject.errorMessage);
                     }
                 };
 
                 client.onMessageArrived = (message) => {
-                    console.log("Mensaje recibido:", message.payloadString);
+                    console.log("Message Arrived:", message.payloadString);
                 };
 
                 client.connect({
                     onSuccess: () => {
-                        console.log("Conectado al broker MQTT");
-                        client.subscribe("test/topic");
+                        console.log("Connected to broker");
+                        client.subscribe("test/topic"); // Replace with your topic
                     },
                     onFailure: (error) => {
-                        console.log("Error de conexión:", error.errorMessage);
+                        console.log("Connection Failed:", error.errorMessage);
                     }
                 });
+
+                window.sendGreenOn = function() {
+                    const message = new Paho.MQTT.Message("green_on");
+                    message.destinationName = "test/topic";
+                    client.send(message);
+                    console.log("Message Sent: green_on");
+                };
+
+                window.sendGreenOff = function() {
+                    const message = new Paho.MQTT.Message("green_off");
+                    message.destinationName = "test/topic";
+                    client.send(message);
+                    console.log("Message Sent: green_off");
+                };
             });
+        </script>
+
+        <script>
+            let chart;
+
+            // Configurar la gráfica
+            function setupChart() {
+                const ctx = document.getElementById('scoreChart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [], // Fechas
+                        datasets: [{
+                            label: 'Puntuación',
+                            data: [], // Puntuaciones
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Fecha del Juego'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Puntuación'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Actualizar la gráfica con los filtros
+            function updateChart() {
+                const pacienteId = document.getElementById('filter-paciente').value.trim();
+                const juegoId = document.getElementById('filter-juego').value.trim();
+
+                if (!pacienteId || !juegoId) {
+                    alert('Por favor, ingresa el ID del paciente y del juego.');
+                    return;
+                }
+
+                fetch(`http://${ip}:5000/filtered_data?id_paciente=${pacienteId}&id_juego=${juegoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+
+                        // Actualizar datos de la gráfica
+                        const fechas = data.map(d => d.fecha);
+                        const puntuaciones = data.map(d => d.puntuacion);
+
+                        chart.data.labels = fechas;
+                        chart.data.datasets[0].data = puntuaciones;
+                        chart.update();
+                    })
+                    .catch(error => {
+                        console.error('Error al cargar los datos:', error);
+                        alert('Hubo un error al cargar los datos.');
+                    });
+            }
+
+            // Inicializar la gráfica
+            document.addEventListener('DOMContentLoaded', setupChart);
         </script>
     </body>
 </html>
