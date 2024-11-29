@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Neurobox</title>
+        <link rel="stylesheet" href="estilos.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+        <style>
+           #filtros-container {
+                max-width: 100%; /* Limita el ancho al 100% del contenedor */
+                overflow-x: auto; /* Habilita el scroll horizontal */
+                white-space: nowrap; /* Mantiene los filtros en una sola línea */
+                border: 1px solid #ccc;
+                padding: 10px;
+                margin-bottom: 10px;
+                background-color: #f9f9f9;
+            }
+            #Basededatosfea {
+                overflow: auto;
+                max-height: 500px;
+                border: 1px solid #ccc;
+            }
+
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            th {
+                position: sticky;
+                top: 0;
+                background-color: #f2f2f2;
+            }
+
+            th, td {
+                min-width: 150px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="Container">
+            <header>
+                <h1>Neurobox</h1>
+            </header>
+
+            <nav>
+                <ul>
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#informacion">Información</a></li>
+                    <li><a href="#Basededatosfea">Base de datos</a></li>
+                    <li><a href="resultados_neurobox.html">Resultados</a></li>
+                    <button onclick="sendGreenOn()">Send green_on</button>
+                    <button onclick="sendGreenOff()">Send green_off</button>
+                </ul>
+            </nav>
+
+            <section id="Content">
+                <article class="article2">
+<<<<<<< HEAD
+                    <h2>Página Web</h2>
+=======
+
+>>>>>>> leds
+                    <img src="Sin título.png" alt="Modelo de la Neurobox" width="300" height="200">
+                </article>
+                <article class="article">
+                    <h2>Objetivos</h2>
+                    <p>
+                        Nuestro objetivo es crear un dispositivo interactivo para ayudar a niños con problemas de coordinación a mejorar sus habilidades motoras finas y gruesas de una manera divertida y estimulante. Este dispositivo integrará una serie de juegos que promoverán el desarrollo de destrezas como la precisión, el equilibrio y la concentración. Utilizaremos sensores y retroalimentación visual y auditiva para captar el interés de los niños y para proporcionarles una experiencia de aprendizaje que los motive a practicar y superar retos, reforzando así su confianza y mejorando sus habilidades motrices en cada sesión.
+                    </p>
+                </article>
+                <article class="article" id="informacion">
+                    <h2>Información</h2>
+                    <p>Texto de información</p>
+                </article>
+                <article class="article" id="Basededatosfea">
+                    <h2>Base de datos combinada</h2>
+                    <div>
+                        <div id="filtros-container">
+                            <label for="filter-id-juego">ID Juego:</label>
+                            <input id="filter-id-juego" type="text" oninput="filterTable()" />
+                        
+                            <label for="filter-id-paciente">ID Paciente:</label>
+                            <input id="filter-id-paciente" type="text" oninput="filterTable()" />
+                        
+                            <label for="filter-id-especialista">ID Especialista:</label>
+                            <input id="filter-id-especialista" type="text" oninput="filterTable()" />
+                        
+                            <label for="filter-id-resultado">ID Resultado:</label>
+                            <input id="filter-id-resultado" type="text" oninput="filterTable()" />
+                        </div>                        
+                    <div style="overflow: auto; max-height: 500px;">
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>ID Paciente</th>
+                                    <th>Nombre del Paciente</th>
+                                    <th>Edad del Paciente</th>
+                                    <th>Nombre del Tutor</th>
+                                    <th>Edad del Tutor</th>
+                                    <th>Correo del Tutor</th>
+                                    <th>ID Especialista</th>
+                                    <th>Nombre del Especialista</th>
+                                    <th>Correo del Especialista</th>
+                                    <th>ID Juego</th>
+                                    <th>Nombre del Juego</th>
+                                    <th>Propósito del Juego</th>
+                                    <th>Duración del Juego</th>
+                                    <th>Fecha del Juego</th>
+                                    <th>ID Resultado</th>
+                                    <th>Puntuación</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Los datos dinámicos se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </section>
+
+            <footer>
+                <nav>
+                    <ul>
+                        <li><a href="contactos.html">Contactos</a></li>
+                    </ul>
+                </nav>
+            </footer>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const apiUrl = "http://10.43.60.98:5000/all_data"; // Endpoint actualizado
+                const tableBody = document.querySelector("#Basededatosfea table tbody");
+
+                // Cargar datos combinados
+                function loadCombinedData() {
+                    fetch(apiUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            tableBody.innerHTML = ""; // Limpiar tabla
+
+                            if (data.error) {
+                                const errorRow = document.createElement("tr");
+                                errorRow.innerHTML = `<td colspan="17">${data.error}</td>`;
+                                tableBody.appendChild(errorRow);
+                                return;
+                            }
+
+                            data.forEach(row => {
+                                const tableRow = document.createElement("tr");
+                                tableRow.innerHTML = `
+                                    <td>${row.ID_Paciente || "N/A"}</td>
+                                    <td>${row.Nombre_Paciente || "N/A"}</td>
+                                    <td>${row.Edad_Paciente || "N/A"}</td>
+                                    <td>${row.Nombre_Tutor || "N/A"}</td>
+                                    <td>${row.Edad_Tutor || "N/A"}</td>
+                                    <td>${row.Correo_Tutor || "N/A"}</td>
+                                    <td>${row.ID_Especialista || "N/A"}</td>
+                                    <td>${row.Nombre_Especialista || "N/A"}</td>
+                                    <td>${row.Correo_Especialista || "N/A"}</td>
+                                    <td>${row.ID_Juego || "N/A"}</td>
+                                    <td>${row.Nombre_Juego || "N/A"}</td>
+                                    <td>${row.Proposito_Juego || "N/A"}</td>
+                                    <td>${row.Duracion_Juego || "N/A"}</td>
+                                    <td>${row.Fecha_Juego || "N/A"}</td>
+                                    <td>${row.ID_Resultado || "N/A"}</td>
+                                    <td>${row.Puntuacion_Resultado || "N/A"}</td>
+                                    <td>${row.Tipo_Resultado || "N/A"}</td>
+                                `;
+                                tableBody.appendChild(tableRow);
+                            });
+                        })
+                        .catch(error => {
+                            console.error("Error al cargar los datos:", error);
+                            const errorRow = document.createElement("tr");
+                            errorRow.innerHTML = `<td colspan="17">Error cargando los datos</td>`;
+                            tableBody.appendChild(errorRow);
+                        });
+                }
+
+                loadCombinedData(); // Llama la función al cargar la página
+
+                // Filtro para la tabla
+                function filterTable() {
+                    const idJuegoInput = document.querySelector("#filter-id-juego").value.trim();
+                    const idPacienteInput = document.querySelector("#filter-id-paciente").value.trim();
+                    const idEspecialistaInput = document.querySelector("#filter-id-especialista").value.trim();
+                    const idResultadoInput = document.querySelector("#filter-id-resultado").value.trim();
+
+                    const rows = tableBody.querySelectorAll("tr");
+                    rows.forEach(row => {
+                        const idJuegoCell = row.children[9]?.textContent.trim();
+                        const idPacienteCell = row.children[0]?.textContent.trim();
+                        const idEspecialistaCell = row.children[6]?.textContent.trim();
+                        const idResultadoCell = row.children[14]?.textContent.trim();
+
+                        const matchesIdJuego = idJuegoInput === "" || idJuegoCell === idJuegoInput;
+                        const matchesIdPaciente = idPacienteInput === "" || idPacienteCell === idPacienteInput;
+                        const matchesIdEspecialista = idEspecialistaInput === "" || idEspecialistaCell === idEspecialistaInput;
+                        const matchesIdResultado = idResultadoInput === "" || idResultadoCell === idResultadoInput;
+
+                        if (matchesIdJuego && matchesIdPaciente && matchesIdEspecialista && matchesIdResultado) {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
+                    });
+                }
+
+                window.filterTable = filterTable;
+
+                // Configuración MQTT
+                const client = new Paho.MQTT.Client("broker.hivemq.com", 8000, "clientId-" + Math.random());
+
+                client.onConnectionLost = (responseObject) => {
+                    if (responseObject.errorCode !== 0) {
+                        console.log("Conexión perdida:", responseObject.errorMessage);
+                    }
+                };
+
+                client.onMessageArrived = (message) => {
+                    console.log("Mensaje recibido:", message.payloadString);
+                };
+
+                client.connect({
+                    onSuccess: () => {
+                        console.log("Conectado al broker MQTT");
+                        client.subscribe("test/topic");
+                    },
+                    onFailure: (error) => {
+                        console.log("Error de conexión:", error.errorMessage);
+                    }
+                });
+
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                        const client = new Paho.MQTT.Client("broker.hivemq.com", 8000, "clientId-" + Math.random());
+            
+                        client.onConnectionLost = (responseObject) => {
+                            if (responseObject.errorCode !== 0) {
+                                console.log("Connection Lost:", responseObject.errorMessage);
+                            }
+                        };
+            
+                        client.onMessageArrived = (message) => {
+                            console.log("Message Arrived:", message.payloadString);
+                        };
+            
+                        client.connect({
+                            onSuccess: () => {
+                                console.log("Connected to broker");
+                                client.subscribe("test/topic"); // Replace with your topic
+                            },
+                            onFailure: (error) => {
+                                console.log("Connection Failed:", error.errorMessage);
+                            }
+                        });
+            
+                        window.sendGreenOn = function() {
+                            const message = new Paho.MQTT.Message("green_on");
+                            message.destinationName = "test/topic";
+                            client.send(message);
+                            console.log("Message Sent: green_on");
+                        };
+            
+                        window.sendGreenOff = function() {
+                            const message = new Paho.MQTT.Message("green_off");
+                            message.destinationName = "test/topic";
+                            client.send(message);
+                            console.log("Message Sent: green_off");
+                        };
+                    });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,325 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo general del cuerpo */
+body {
+    background: #f5f7fa; /* Color de fondo suave */
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    line-height: 1.7;
+    padding: 20px;
+}
+
+/* Container */
+#Container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto; /* Centrar horizontalmente */
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* Centrar la navegación */
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente los enlaces */
+    gap: 30px;
+}
+
+/* Encabezado */
+header {
+    background: linear-gradient(200deg, #6a11cb, #2575fc);
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 16px;
+    margin-bottom: 40px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* Navegación */
+nav {
+    background: #d0e6f5; /* Fondo más suave */
+    height: 70px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 30px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+nav ul li a:hover {
+    background-color: #3a3f58;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* Sección de contenido */
+#content {
+    display: flex;
+    flex-direction: column; /* Cambiar a dirección vertical */
+    align-items: center; /* Centrar horizontalmente los elementos */
+    gap: 20px;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.1);
+    margin: 0 auto; /* Asegura que el contenedor completo esté centrado */
+}
+
+#content > section {
+    width: 75%;
+}
+
+/* Artículos */
+.article, .article2, .footer {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 35px;
+}
+
+.article2 h2 {
+    color: #3a3f58;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.article2 {
+    text-align: center;
+}
+
+.article2 img {
+    display: block;
+    margin: 25px auto;
+    border-radius: 12px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Efecto hover en los artículos */
+.article:hover, .article2:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Barra lateral */
+aside {
+    width: 20%;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+/* Formulario en la barra lateral */
+aside form input[type="text"] {
+    padding: 12px;
+    width: 100%;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+aside form input[type="text"]:focus {
+    border-color: #3a3f58;
+    outline: none;
+}
+
+aside form input[type="submit"] {
+    background-color: #3a3f58;
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+aside form input[type="submit"]:hover {
+    background-color: #2d3248;
+    transform: scale(1.05);
+}
+
+/* Clearfix */
+.clearfix {
+    clear: both;
+}
+
+/* Media queries para adaptar el diseño a dispositivos pequeños */
+@media (max-width: 768px) {
+    #content {
+        flex-direction: column;
+    }
+    
+    aside {
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    nav ul {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+#filtros-container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+#filtros-container label {
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+
+#filtros-container input {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    width: 180px;
+    transition: border-color 0.3s ease;
+}
+
+#filtros-container input:focus {
+    border-color: #6a11cb;
+    outline: none;
+}
+
+/* Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table-container {
+    overflow-x: auto; /* Barra de desplazamiento horizontal */
+    margin-top: 20px;
+    border-radius: 12px; /* Bordes suaves alrededor del contenedor */
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+table thead {
+    background: linear-gradient(200deg, #6a11cb, #2575fc);
+    color: white;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.95rem;
+}
+
+table th {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tbody td {
+    color: #555;
+}
+
+/* Filtros con diseño flexible */
+#filtros-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+#filtros-container label {
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+
+#filtros-container input {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    width: 180px;
+    transition: border-color 0.3s ease;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    #filtros-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #filtros-container input {
+        width: 100%;
+    }
+
+    table th, table td {
+        font-size: 0.85rem;
+        padding: 10px;
+    }
+}
