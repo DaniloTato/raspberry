@@ -9,7 +9,7 @@
     </head>
 
     <script>
-        var ip = "192.168.86.227";
+        var ip = "10.43.39.254";
     </script>
 
     <body>
@@ -36,7 +36,7 @@
                     <h2>Mandar juego a mi NEUROBOX</h2>
                     <button class="btn_purple" onclick="sendGreenOn()">Juego Cowboy</button>
                     <button class="btn_red" onclick="sendGreenOff()">Juego Lotería</button>
-                    <button class="btn_green" onclick="sendGreenOff()">Juego Colores</button>
+                    <button class="btn_green" onclick="sendColor()">Juego Colores</button>
                 </ul>
             </nav>
 
@@ -193,6 +193,14 @@
 
                 client.onMessageArrived = (message) => {
                     console.log("Message Arrived:", message.payloadString);
+
+                    if(message.payloadString == "green_on"){
+                        alert("Iniciando juego de COWBOY. Cheque su NEUROBOX.");
+                    } else if(message.payloadString == "green_off"){
+                        alert("Iniciando juego de LOTERÍA. Cheque su NEUROBOX.");
+                    } else if(message.payloadString == "colors"){
+                        alert("Iniciando juego de COLORES. Cheque su NEUROBOX.");
+                    }
                 };
 
                 client.connect({
@@ -217,6 +225,13 @@
                     message.destinationName = "test/topic";
                     client.send(message);
                     console.log("Message Sent: green_off");
+                };
+
+                window.sendColor = function() {
+                    const message = new Paho.MQTT.Message("colors");
+                    message.destinationName = "test/topic";
+                    client.send(message);
+                    console.log("Message Sent: colors");
                 };
             });
         </script>
