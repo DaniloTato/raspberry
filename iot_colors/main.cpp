@@ -125,7 +125,7 @@ int main(){
 
     if(gpioInitialise() < 0){
         std::cerr << "failed gpio\n";
-	    return -1;
+	return -1;
     }
 
     gpioSetMode(PIN_BUTTON_1, PI_INPUT);
